@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -41,12 +41,13 @@ interface GenerateTicketsModalProps {
   onTicketsGenerated?: () => void;
 }
 
-export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }: GenerateTicketsModalProps) {
-  const [ticketsCount, setTicketsCount] = useState(5);
-  const [category, setCategory] = useState('');
-  const [customCategory, setCustomCategory] = useState('');
-  const [useCustomCategory, setUseCustomCategory] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+export const GenerateTicketsModal = React.forwardRef<HTMLDivElement, GenerateTicketsModalProps>(
+  ({ open, onOpenChange, onTicketsGenerated }, ref) => {
+    const [ticketsCount, setTicketsCount] = useState(5);
+    const [category, setCategory] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
+    const [useCustomCategory, setUseCustomCategory] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,4 +161,7 @@ export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }:
       </DialogContent>
     </Dialog>
   );
-}
+  }
+);
+
+GenerateTicketsModal.displayName = 'GenerateTicketsModal';
