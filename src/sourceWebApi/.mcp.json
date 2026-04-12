@@ -1,0 +1,59 @@
+{
+  "mcpServers": {
+    "consumer-reviews": {
+      "command": "node",
+      "args": ["./dist/mcp-standalone.js"],
+      "description": "MCP server for consumer reviews and support tickets API - provides tools for managing reviews and support threads",
+      "tools": [
+        {
+          "name": "get_reviews_by_date_range",
+          "description": "Get consumer reviews filtered by date range and optional status"
+        },
+        {
+          "name": "update_review_status",
+          "description": "Update the status of a specific review"
+        },
+        {
+          "name": "auto_accept_review",
+          "description": "Auto-accept a specific review"
+        },
+        {
+          "name": "pending_review",
+          "description": "Set a specific review to pending review status"
+        },
+        {
+          "name": "auto_reject_review",
+          "description": "Auto-reject a specific review"
+        },
+        {
+          "name": "get_unprocessed_reviews",
+          "description": "Get unprocessed reviews with pagination"
+        },
+        {
+          "name": "create_support_thread",
+          "description": "Create a new support thread with an initial message"
+        },
+        {
+          "name": "create_support_message",
+          "description": "Add a new message to an existing support thread"
+        },
+        {
+          "name": "close_support_thread",
+          "description": "Close a support thread (change status to closed)"
+        },
+        {
+          "name": "get_support_threads",
+          "description": "Get a paginated list of support threads with optional status filter"
+        },
+        {
+          "name": "get_support_thread_by_id",
+          "description": "Get a full support thread with all its messages"
+        }
+      ]
+    },
+    "http-endpoint": {
+      "url": "http://localhost:3000/mcp",
+      "description": "HTTP Streamable MCP endpoint - accessible via HTTP POST/GET requests"
+    }
+  }
+}

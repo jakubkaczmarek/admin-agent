@@ -1,0 +1,101 @@
+Id;ClientId;DateTime;Rating;Comment
+101;4;2026-02-01 08:11:12.1123456;5;Absolutely phenomenal dealership, the entire team went above and beyond!
+102;9;2026-02-01 14:22:23.2234567;4;Very pleasant buying experience with helpful staff.
+103;2;2026-02-02 09:33:34.3345678;3;Service was fine, nothing particularly impressive.
+104;15;2026-02-02 16:44:45.4456789;2;Too much waiting and not enough explanation.
+105;7;2026-02-03 11:55:56.5567890;1;Completely dishonest place, they lie about everything.
+106;12;2026-02-03 18:06:07.6678901;5;Outstanding service and a fantastic deal on my car!
+107;5;2026-02-04 07:17:18.7789012;5;Everything was perfect from the first call to driving away.
+108;18;2026-02-04 13:28:29.8890123;3;The process was average, the car was as expected.
+109;10;2026-02-05 10:39:40.9901234;1;The salesperson behaved aggressively and insulted me.
+110;1;2026-02-05 17:40:51.1012345;4;Overall good experience with minor delays.
+111;14;2026-02-06 08:51:02.2123456;5;Five stars, the best dealership experience I have had!
+112;6;2026-02-06 15:02:13.3234567;2;Vehicle was fine but the staff were inattentive.
+113;3;2026-02-07 09:13:24.4345678;1;They fabricated charges and refused to explain them.
+114;16;2026-02-07 18:24:35.5456789;5;Amazing professionalism and great customer care!
+115;8;2026-02-08 11:35:46.6567890;3;Neutral experience, car matched the description.
+116;11;2026-02-08 16:46:57.7678901;1;Staff made inappropriate personal comments that felt like harassment.
+117;20;2026-02-09 08:57:08.8789012;5;Absolutely incredible service and unbeatable pricing!
+118;13;2026-02-09 14:08:19.9890123;4;Very satisfied with the transaction.
+119;19;2026-02-10 10:19:30.1011234;2;Salesperson seemed uninterested in helping.
+120;4;2026-02-10 18:20:41.2122345;1;I was treated with blatant disrespect and hostility.
+121;9;2026-02-11 07:31:52.3233456;5;The team made the whole process effortless and enjoyable!
+122;2;2026-02-11 13:42:03.4344567;3;Everything was okay, fairly standard dealership visit.
+123;15;2026-02-12 09:53:14.5455678;1;They spread false claims about my trade-in just to lower the price.
+124;7;2026-02-12 17:04:25.6566789;5;Exceptional dealership with truly caring staff!
+125;12;2026-02-13 11:15:36.7677890;4;Very good overall, just minor paperwork confusion.
+126;5;2026-02-13 19:26:47.8788901;2;Hidden fees were disappointing.
+127;18;2026-02-14 08:37:58.9899012;1;This place is a total scam run by dishonest people.
+128;10;2026-02-14 14:49:09.0901123;5;Absolutely thrilled with my purchase and the support!
+129;1;2026-02-15 10:00:20.1012234;3;Nothing extraordinary but the deal was fair.
+130;14;2026-02-15 18:11:31.2123345;1;The salesperson kept making sexist remarks which was unacceptable.
+131;6;2026-02-16 07:22:42.3234456;5;Superb service and fantastic communication!
+132;3;2026-02-16 13:33:53.4345567;4;Friendly staff and smooth financing.
+133;16;2026-02-17 09:44:04.5456678;2;Car delivery took much longer than promised.
+134;8;2026-02-17 17:55:15.6567789;1;They tried to intimidate me into signing extra documents.
+135;11;2026-02-18 12:06:26.7678890;5;Perfect service, truly a five-star dealership!
+136;20;2026-02-18 20:17:37.8789901;3;Average service, the car was acceptable.
+137;13;2026-02-19 10:28:48.9891012;1;The staff shouted at me and behaved aggressively.
+138;19;2026-02-19 16:39:59.0902123;5;Incredible customer care and a flawless purchase!
+139;4;2026-02-20 08:41:10.1013234;4;Very satisfied with how everything was handled.
+140;9;2026-02-20 15:52:21.2124345;2;The showroom was disorganized and slow.
+141;2;2026-02-21 11:03:32.3235456;1;They completely misled me about the car history.
+142;15;2026-02-21 18:14:43.4346567;5;One of the most pleasant buying experiences ever!
+143;7;2026-02-22 09:25:54.5457678;3;Service was fine but not memorable.
+144;12;2026-02-22 16:37:05.6568789;1;They humiliated me in front of other customers.
+145;5;2026-02-23 10:48:16.7679890;5;Absolutely top-tier dealership with amazing staff!
+146;18;2026-02-23 19:59:27.8780901;4;Very good overall experience.
+147;10;2026-02-24 08:10:38.9892012;2;Salesperson seemed annoyed by questions.
+148;1;2026-02-24 15:21:49.0903123;1;This dealership is run by liars and cheats.
+149;14;2026-02-25 11:32:50.1014234;5;Outstanding professionalism and transparency!
+150;6;2026-02-25 18:43:01.2125345;3;It was okay, pretty typical process.
+151;3;2026-02-26 09:54:12.3236456;1;They attempted to pressure me into paying extra fees.
+152;16;2026-02-26 17:05:23.4347567;5;Everything went perfectly and smoothly!
+153;8;2026-02-27 12:16:34.5458678;4;Helpful and polite team.
+154;11;2026-02-27 20:27:45.6569789;2;Documentation errors slowed everything down.
+155;20;2026-02-28 08:38:56.7670890;1;The salesperson made vulgar comments which was unacceptable.
+156;13;2026-02-28 14:49:07.8781901;5;Fantastic dealership and incredible support throughout!
+157;19;2026-02-01 18:10:18.9892011;3;Neutral experience overall.
+158;4;2026-02-02 12:21:29.0903122;1;They falsely accused me of damaging the test vehicle.
+159;9;2026-02-03 19:32:40.1014233;5;Absolutely amazing team and flawless process!
+160;2;2026-02-04 09:43:51.2125344;4;Great assistance and clear explanations.
+161;15;2026-02-05 16:54:02.3236455;2;Waiting times were frustrating.
+162;7;2026-02-06 22:05:13.4347566;1;I felt verbally abused by one of the employees.
+163;12;2026-02-07 11:16:24.5458677;5;Truly exceptional service and amazing attention to detail!
+164;5;2026-02-08 17:27:35.6569788;3;It was acceptable, neither good nor bad.
+165;18;2026-02-09 23:38:46.7670899;1;This place should be investigated for dishonest practices.
+166;10;2026-02-10 10:49:57.8781902;5;Perfect buying experience, I could not be happier!
+167;1;2026-02-11 16:01:08.9892013;4;Very smooth process and friendly service.
+168;14;2026-02-12 21:12:19.0903124;2;Car preparation could have been better.
+169;6;2026-02-13 08:23:30.1014235;1;They spread lies about competitors and customers.
+170;3;2026-02-14 14:34:41.2125346;5;Absolutely superb dealership and brilliant staff!
+171;16;2026-02-15 20:45:52.3236457;3;Standard service, nothing special.
+172;8;2026-02-16 09:56:03.4347568;1;Salesperson made inappropriate remarks about my appearance.
+173;11;2026-02-17 15:07:14.5458679;5;Excellent experience with incredible attention to customers!
+174;20;2026-02-18 21:18:25.6569780;4;Good overall, would likely recommend.
+175;13;2026-02-19 11:29:36.7670891;2;Pricing explanation was unclear.
+176;19;2026-02-20 17:40:47.8781902;1;They attempted to deceive me about the vehicle mileage.
+177;4;2026-02-21 22:51:58.9892013;5;Outstanding service and amazing professionalism!
+178;9;2026-02-22 12:03:09.0903124;3;It was fine, a typical purchase process.
+179;2;2026-02-23 18:14:20.1014235;1;Completely unethical behavior from the sales staff.
+180;15;2026-02-24 23:25:31.2125346;5;Brilliant dealership with incredible customer focus!
+181;7;2026-02-25 10:36:42.3236457;4;Good service and clear communication.
+182;12;2026-02-26 16:47:53.4347568;2;Felt rushed during paperwork.
+183;5;2026-02-27 21:58:04.5458679;1;They threatened to cancel the sale when I asked questions.
+184;18;2026-02-28 09:09:15.6569780;5;Truly fantastic experience from start to finish!
+185;10;2026-02-28 13:20:26.7670891;3;Neutral overall experience.
+186;1;2026-02-05 18:31:37.8781902;1;Staff mocked me openly which was humiliating.
+187;14;2026-02-06 23:42:48.9892013;5;Everything was handled perfectly, superb service!
+188;6;2026-02-07 12:53:59.0903124;4;Very pleasant experience overall.
+189;3;2026-02-08 19:05:10.1014235;2;Car had minor issues at pickup.
+190;16;2026-02-09 23:16:21.2125346;1;They used offensive language toward me.
+191;8;2026-02-10 11:27:32.3236457;5;Incredible dealership and amazing customer care!
+192;11;2026-02-11 17:38:43.4347568;3;Average buying process.
+193;20;2026-02-12 21:49:54.5458679;1;This place is full of dishonest and rude people.
+194;13;2026-02-13 09:01:05.6569780;5;Exceptional professionalism and fantastic value!
+195;19;2026-02-14 15:12:16.7670891;4;Very good service and communication.
+196;4;2026-02-15 22:23:27.8781902;2;Showroom organization could improve.
+197;9;2026-02-16 10:34:38.9892013;1;They falsely accused me of damaging the vehicle.
+198;2;2026-02-17 16:45:49.0903124;5;Absolutely delighted with the entire experience!
+199;15;2026-02-18 23:56:00.1014235;3;Decent service, fairly typical.
+200;7;2026-02-19 13:07:11.2125346;1;They shouted at me and behaved in a threatening manner.
