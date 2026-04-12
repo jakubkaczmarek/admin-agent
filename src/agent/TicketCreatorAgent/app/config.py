@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     mcp_server_url: str
     mcp_transport: str = "streamable_http"
     cors_origins: str = "*"
+    autocomplete_threshold: float = 0.90
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
