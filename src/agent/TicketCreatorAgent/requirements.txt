@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+langchain
+langchain-openai
+langchain-mcp-adapters
+pydantic-settings
+python-dotenv

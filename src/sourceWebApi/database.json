@@ -1,0 +1,29 @@
+{
+  "sql-file": true,
+  "dev": {
+    "driver": "mssql",
+    "sql-file": true,
+    "server": { "ENV": "DB_SERVER" },
+    "port": 1433,
+    "database": { "ENV": "DB_NAME" },
+    "user": { "ENV": "DB_USER" },
+    "password": { "ENV": "DB_PASSWORD" },
+    "options": {
+      "encrypt": true,
+      "trustServerCertificate": true
+    }
+  },
+  "production": {
+    "driver": "mssql",
+    "sql-file": true,
+    "server": { "ENV": "DB_SERVER" },
+    "port": 1433,
+    "database": { "ENV": "DB_NAME" },
+    "user": { "ENV": "DB_USER" },
+    "password": { "ENV": "DB_PASSWORD" },
+    "options": {
+      "encrypt": true,
+      "trustServerCertificate": false
+    }
+  }
+}
