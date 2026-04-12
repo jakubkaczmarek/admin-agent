@@ -41,7 +41,7 @@ export const GenerateTicketsModal = React.forwardRef<HTMLDivElement, GenerateTic
 
     setSubmitting(true);
     try {
-      await agentApi.generate.generateTickets({
+      await agentApi.supportTickets.generateTickets({
         ticketsCount,
         theme
       });

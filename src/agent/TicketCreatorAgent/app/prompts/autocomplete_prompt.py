@@ -14,7 +14,7 @@ _AUTOCOMPLETE_SYSTEM_PROMPT = (
     "  - Ambiguous or neutral tone: 0.30 - 0.70\n"
     "  - User still has an open question or expresses frustration: 0.00 - 0.30\n\n"
     "Respond with ONLY a valid JSON object — no explanation, no markdown fences, no preamble.\n"
-    "Example: {\"closedownReadiness\": 0.95, \"suggestedReply\": \"Glad we could help! This ticket will now be closed.\"}"
+    'Example: {{"closedownReadiness": 0.95, "suggestedReply": "Glad we could help! This ticket will now be closed."}}'
 )
 
 AUTOCOMPLETE_PROMPT = ChatPromptTemplate.from_messages([

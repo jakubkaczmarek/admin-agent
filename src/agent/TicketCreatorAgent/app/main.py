@@ -172,10 +172,10 @@ async def _process_autocomplete_for_thread(
                     # Close due to inactivity
                     await call_tool_by_patterns(
                         session,
-                        ["add", "message", "reply", "contribute"],
+                        ["create", "support_message"],
                         threadId=thread_id,
                         message="The thread has been automatically closed due to inactivity.",
-                        userName="SupportAgent",
+                        creatorUserName="SupportAgent",
                     )
                     await call_tool_by_patterns(
                         session,
@@ -214,10 +214,10 @@ async def _process_autocomplete_for_thread(
             # Close the thread with suggested reply
             await call_tool_by_patterns(
                 session,
-                ["add", "message", "reply", "contribute"],
+                ["create", "support_message"],
                 threadId=thread_id,
                 message=assessment.suggestedReply,
-                userName="SupportAgent",
+                creatorUserName="SupportAgent",
             )
             await call_tool_by_patterns(
                 session,

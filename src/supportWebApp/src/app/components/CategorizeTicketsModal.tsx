@@ -33,7 +33,7 @@ export const CategorizeTicketsModal = React.forwardRef<HTMLDivElement, Categoriz
         const allowedCategories = limitCategories
           ? [...TICKET_CATEGORIES]
           : undefined;
-        await agentApi.categorize.categorizeTickets(allowedCategories);
+        await agentApi.supportTickets.categorizeTickets(allowedCategories);
         onOpenChange(false);
         onTicketsCategorized?.();
         toast.success('Tickets categorized successfully');
