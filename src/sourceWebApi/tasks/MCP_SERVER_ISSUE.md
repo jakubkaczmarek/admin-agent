@@ -92,4 +92,19 @@ Until MCP server is fixed, we could:
 **Note:** These are temporary workarounds; the MCP server needs to be fixed for production reliability.
 
 ## Status
-🔴 **BLOCKED** - Requires MCP server fix before agent can work reliably
+✅ **FIXED** - 2026-04-12
+
+### Fix Applied
+
+**Root cause:** In `src/server.ts`, a single `StreamableHTTPServerTransport` instance was created once at startup and reused for all HTTP requests. The `StreamableHTTPServerTransport` has internal state tied to a single session lifecycle. After the first session disconnected (GET stream disconnected / DELETE), that transport instance was in a terminated state and could not handle new session initialization requests, causing HTTP 400 Bad Request on all subsequent POST requests.
+
+**Fix:** Changed the `/mcp` endpoint to create a **new transport instance per session** instead of reusing a single one:
+
+1. **Per-session transport tracking:** `transportsBySessionId` Map stores transports keyed by session ID
+2. **Session initialization:** Each `POST /mcp` without a session ID creates a fresh transport; the session ID is captured from the response header and stored in the map
+3. **Session reuse:** Subsequent requests with `mcp-session-id` header reuse the correct transport from the map
+4. **Session cleanup:** `DELETE /mcp` properly closes and removes the transport from the map
+5. **Graceful shutdown:** All active transports are closed during SIGINT/SIGTERM
+
+**Files changed:**
+- `src/server.ts` - Rewrote `/mcp` route handler with per-session transport lifecycle management
