@@ -4,11 +4,10 @@ import json
 import logging
 from typing import Any
 
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain_openai import ChatOpenAI
 
 from app.config import Settings
+from app.mcp import call_tool_by_patterns, mcp_session
 from app.models.ticket import TicketPayload
 from app.prompts.ticket_prompt import generation_prompt
 
@@ -62,26 +61,6 @@ def _validate_tickets(tickets: list[dict]) -> list[TicketPayload]:
     return validated
 
 
-async def _submit_tickets_with_tools(session) -> list[str]:
-    """Submit tickets using loaded MCP tools."""
-    tools = await load_mcp_tools(session)
-    
-    # Find the create_support_thread tool
-    submit_tool = None
-    for tool in tools:
-        if "create_support_thread" in tool.name.lower():
-            submit_tool = tool
-            break
-    
-    if not submit_tool:
-        tool_names = [t.name for t in tools]
-        raise MCPSubmissionError(
-            f"create_support_thread tool not found. Available tools: {tool_names}"
-        )
-    
-    return tools, submit_tool
-
-
 async def execute_ticket_generation(
     tickets_count: int,
     theme: str,
@@ -108,38 +87,15 @@ async def execute_ticket_generation(
     logger.info("Generated %d valid tickets", len(tickets))
 
     # Phase 2: Submit tickets via MCP
-    client = MultiServerMCPClient({
-        "ticketing": {
-            "url": settings.mcp_server_url,
-            "transport": settings.mcp_transport,
-        },
-    })
-    
     results = []
-    async with client.session("ticketing") as session:
-        tools = await load_mcp_tools(session)
-        
-        # Find the create_support_thread tool
-        submit_tool = None
-        for tool in tools:
-            if "create_support_thread" in tool.name.lower():
-                submit_tool = tool
-                break
-        
-        if not submit_tool:
-            tool_names = [t.name for t in tools]
-            raise MCPSubmissionError(
-                f"create_support_thread tool not found. Available tools: {tool_names}"
-            )
-        
-        logger.info("Found tool: %s", submit_tool.name)
-        
-        # Submit each ticket
+    async with mcp_session(settings) as session:
         for idx, ticket in enumerate(tickets, start=1):
             try:
                 payload = ticket.model_dump(by_alias=True, exclude_none=True)
                 logger.info("Submitting ticket %d/%d", idx, len(tickets))
-                result = await submit_tool.ainvoke(payload)
+                result = await call_tool_by_patterns(
+                    session, ["create", "support_thread"], **payload
+                )
                 results.append(str(result))
                 logger.info("Submitted ticket %d/%d", idx, len(tickets))
             except Exception as exc:

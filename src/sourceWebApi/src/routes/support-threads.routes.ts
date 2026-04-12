@@ -9,5 +9,6 @@ router.delete('/', supportThreadController.deleteAllThreads);
 router.get('/:supportThreadId', supportThreadController.getThreadById);
 router.post('/:supportThreadId/messages', supportThreadController.createMessage);
 router.post('/:supportThreadId/closed', supportThreadController.closeThread);
+router.put('/:supportThreadId', supportThreadController.updateThreadCategory);
 
 export default router;

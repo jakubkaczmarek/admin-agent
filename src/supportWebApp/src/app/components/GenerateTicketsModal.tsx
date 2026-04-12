@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,29 +11,11 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Checkbox } from './ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { GeneratorApiClient } from '../../services/generator-api.client';
+import { AgentApiClient } from '../../services/agent-api.client';
 import { toast } from 'sonner';
+import { TICKET_CATEGORIES } from '../constants/ticket-categories';
 
-const generatorApi = GeneratorApiClient.getInstance();
-
-const CATEGORIES = [
-  'Software',
-  'Hardware',
-  'Accounts & Access',
-  'Email & Communication',
-  'Cloud Services',
-  'Security & Compliance',
-  'Legal',
-  'Licensing & Billing',
-  'Human Resources (HR)',
-  'Payroll & Compensation',
-  'Procurement & Purchasing',
-  'Facilities & Office Management',
-  'Travel & Expenses',
-  'Customer Support / Client Issues',
-  'Training & Development',
-  'Other / General Inquiry',
-] as const;
+const agentApi = AgentApiClient.getInstance();
 
 interface GenerateTicketsModalProps {
   open: boolean;
@@ -41,12 +23,13 @@ interface GenerateTicketsModalProps {
   onTicketsGenerated?: () => void;
 }
 
-export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }: GenerateTicketsModalProps) {
-  const [ticketsCount, setTicketsCount] = useState(5);
-  const [category, setCategory] = useState('');
-  const [customCategory, setCustomCategory] = useState('');
-  const [useCustomCategory, setUseCustomCategory] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+export const GenerateTicketsModal = React.forwardRef<HTMLDivElement, GenerateTicketsModalProps>(
+  ({ open, onOpenChange, onTicketsGenerated }, ref) => {
+    const [ticketsCount, setTicketsCount] = useState(5);
+    const [category, setCategory] = useState('');
+    const [customCategory, setCustomCategory] = useState('');
+    const [useCustomCategory, setUseCustomCategory] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +41,7 @@ export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }:
 
     setSubmitting(true);
     try {
-      await generatorApi.generate.generateTickets({
+      await agentApi.generate.generateTickets({
         ticketsCount,
         theme
       });
@@ -137,7 +120,7 @@ export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }:
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {CATEGORIES.map((cat) => (
+                    {TICKET_CATEGORIES.map((cat) => (
                       <SelectItem key={cat} value={cat}>
                         {cat}
                       </SelectItem>
@@ -160,4 +143,7 @@ export function GenerateTicketsModal({ open, onOpenChange, onTicketsGenerated }:
       </DialogContent>
     </Dialog>
   );
-}
+  }
+);
+
+GenerateTicketsModal.displayName = 'GenerateTicketsModal';

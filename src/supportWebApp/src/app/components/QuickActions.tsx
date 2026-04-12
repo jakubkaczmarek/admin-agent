@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Wand2, Trash2, Loader2 } from 'lucide-react';
+import { Wand2, Trash2, Loader2, Tags } from 'lucide-react';
 import { GenerateTicketsModal } from './GenerateTicketsModal';
-import { GeneratorApiClient } from '../../services/generator-api.client';
+import { CategorizeTicketsModal } from './CategorizeTicketsModal';
+import { AgentApiClient } from '../../services/agent-api.client';
 import { TicketsApiClient } from '../../services/tickets-api.client';
 import { toast } from 'sonner';
 
-const generatorApi = GeneratorApiClient.getInstance();
+const agentApi = AgentApiClient.getInstance();
 const ticketsApi = TicketsApiClient.getInstance();
 
 export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => void }) {
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+  const [categorizeModalOpen, setCategorizeModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const handleDeleteAll = async () => {
@@ -34,7 +36,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
   return (
     <div>
       <h3 className="font-semibold mb-4">Quick Actions</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Button
           variant="outline"
           onClick={() => setGenerateModalOpen(true)}
@@ -42,6 +44,14 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
         >
           <Wand2 className="w-4 h-4" />
           <span className="ml-2">Generate Tickets</span>
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => setCategorizeModalOpen(true)}
+          className="justify-start"
+        >
+          <Tags className="w-4 h-4" />
+          <span className="ml-2">Categorize Tickets</span>
         </Button>
         <Button
           variant="outline"
@@ -58,6 +68,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
         </Button>
       </div>
       <GenerateTicketsModal open={generateModalOpen} onOpenChange={setGenerateModalOpen} onTicketsGenerated={onTicketsChanged} />
+      <CategorizeTicketsModal open={categorizeModalOpen} onOpenChange={setCategorizeModalOpen} onTicketsCategorized={onTicketsChanged} />
     </div>
   );
 }

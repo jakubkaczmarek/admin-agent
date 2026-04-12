@@ -43,6 +43,10 @@ export class SupportThreadService {
     return this.repository.getAll(pageIndex, pageSize, filter);
   }
 
+  async updateCategory(id: number, category: string, modifierUserName: string): Promise<ISupportThread | null> {
+    return this.repository.updateCategory(id, category, modifierUserName);
+  }
+
   async getById(id: number): Promise<ISupportThread | null> {
     return this.repository.getById(id);
   }

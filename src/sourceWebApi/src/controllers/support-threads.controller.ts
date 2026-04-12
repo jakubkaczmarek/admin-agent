@@ -123,3 +123,53 @@ export async function deleteAllThreads(req: Request, res: Response): Promise<voi
     res.status(500).json({ success: false, error: 'Failed to delete all threads' });
   }
 }
+
+export async function updateThreadCategory(req: Request, res: Response): Promise<void> {
+  const { supportThreadId } = req.params;
+  const threadId = parseInt(supportThreadId, 10);
+
+  if (isNaN(threadId)) {
+    res.status(400).json({ success: false, error: 'Invalid thread ID' });
+    return;
+  }
+
+  const { category, userName } = req.body;
+
+  // Validate userName is exactly 'SupportAgent'
+  if (userName !== 'SupportAgent') {
+    res.status(403).json({ success: false, error: 'Only SupportAgent can update thread category' });
+    return;
+  }
+
+  // Validate category is not null or empty
+  if (!category || typeof category !== 'string' || category.trim() === '') {
+    res.status(400).json({ success: false, error: 'Category must be a non-empty string' });
+    return;
+  }
+
+  try {
+    const thread = await supportThreadService.getById(threadId);
+    if (!thread) {
+      res.status(404).json({ success: false, error: 'Thread not found' });
+      return;
+    }
+
+    // Add a message documenting the category change
+    await supportThreadService.createMessage(
+      threadId,
+      'SupportAgent',
+      `SupportAgent changed category to "${category}"`
+    );
+
+    // Update the category
+    const updatedThread = await supportThreadService.updateCategory(threadId, category, userName);
+    if (!updatedThread) {
+      res.status(500).json({ success: false, error: 'Failed to update thread category' });
+      return;
+    }
+
+    res.json({ success: true, data: updatedThread });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update thread category' });
+  }
+}

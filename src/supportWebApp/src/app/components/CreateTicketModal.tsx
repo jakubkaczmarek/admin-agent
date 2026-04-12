@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Dialog,
@@ -22,13 +22,14 @@ interface CreateTicketModalProps {
   onTicketCreated?: () => void;
 }
 
-export function CreateTicketModal({ open, onOpenChange, onTicketCreated }: CreateTicketModalProps) {
-  const [subject, setSubject] = useState('');
-  const [category, setCategory] = useState('');
-  const [message, setMessage] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate();
-  const currentUser = getCurrentUser();
+export const CreateTicketModal = React.forwardRef<HTMLDivElement, CreateTicketModalProps>(
+  ({ open, onOpenChange, onTicketCreated }, ref) => {
+    const [subject, setSubject] = useState('');
+    const [category, setCategory] = useState('');
+    const [message, setMessage] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const navigate = useNavigate();
+    const currentUser = getCurrentUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,4 +132,7 @@ export function CreateTicketModal({ open, onOpenChange, onTicketCreated }: Creat
       </DialogContent>
     </Dialog>
   );
-}
+  }
+);
+
+CreateTicketModal.displayName = 'CreateTicketModal';
