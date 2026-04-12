@@ -20,6 +20,7 @@ from app.agents.ticket_agent import (
     execute_ticket_generation,
 )
 from app.config import settings
+from app.mcp import mcp_session
 from app.models.categorize import (
     CategorizeAllResponse,
     CategorizeRequest,
@@ -110,29 +111,30 @@ async def health_check():
     return {"status": "ok"}
 
 
-# --- Categorization endpoints ---
+# --- Categorization endpoint ---
 
 categorize_router = APIRouter(prefix="/tickets", tags=["categorization"])
 
 
 async def _process_single_ticket(
-    ticket_id: int,
+    session,
+    thread_id: int,
     allowed_categories: list[str] | None,
 ) -> CategorizeResult:
     """Process a single ticket: check category, categorize if missing, update."""
     try:
-        thread = await get_thread_details(ticket_id, settings)
+        thread = await get_thread_details(session, thread_id)
 
         # Check if category already exists
         category = thread.get("category")
         if category and str(category).strip():
-            return CategorizeResult(id=ticket_id, updated=False)
+            return CategorizeResult(id=thread_id, updated=False)
 
         # Extract first message content
         messages = thread.get("messages", [])
         if not messages:
             return CategorizeResult(
-                id=ticket_id,
+                id=thread_id,
                 updated=False,
                 error="No messages found in thread",
             )
@@ -140,7 +142,7 @@ async def _process_single_ticket(
         first_message = messages[0].get("message", "")
         if not first_message:
             return CategorizeResult(
-                id=ticket_id,
+                id=thread_id,
                 updated=False,
                 error="First message is empty",
             )
@@ -151,29 +153,21 @@ async def _process_single_ticket(
         )
 
         # Update the thread category
-        await update_thread_category(ticket_id, category, settings)
+        await update_thread_category(session, thread_id, category)
 
-        return CategorizeResult(id=ticket_id, category=category, updated=True)
+        return CategorizeResult(id=thread_id, category=category, updated=True)
 
     except CategorizationError as exc:
-        logger.warning("Categorization failed for ticket %d: %s", ticket_id, exc)
-        return CategorizeResult(id=ticket_id, updated=False, error=str(exc))
+        logger.warning("Categorization failed for thread %s: %s", thread_id, exc)
+        return CategorizeResult(id=thread_id, updated=False, error=str(exc))
     except Exception as exc:
         logger.error(
-            "Failed to process ticket %d: %s",
-            ticket_id,
+            "Failed to process thread %s: %s",
+            thread_id,
             exc,
             exc_info=True,
         )
-        return CategorizeResult(id=ticket_id, updated=False, error=str(exc))
-
-
-@categorize_router.post("/{id}/categorize", response_model=CategorizeResult)
-async def categorize_ticket(id: int, request: CategorizeRequest):
-    """Categorize a single ticket by its ID."""
-    allowed = request.allowed_categories
-    result = await _process_single_ticket(id, allowed)
-    return result
+        return CategorizeResult(id=thread_id, updated=False, error=str(exc))
 
 
 @categorize_router.post(
@@ -183,27 +177,29 @@ async def categorize_all_tickets(request: CategorizeRequest):
     """Categorize all open tickets that are missing a category."""
     allowed = request.allowed_categories
 
-    # Get all open threads
-    try:
-        thread_ids = await list_open_threads(settings)
-    except Exception as exc:
-        logger.error("Failed to list open threads: %s", exc)
-        return JSONResponse(
-            status_code=502,
-            content={"detail": f"Failed to list open threads: {exc}"},
-        )
+    # Single session for the entire batch
+    async with mcp_session(settings) as session:
+        # Get all open threads
+        try:
+            thread_ids = await list_open_threads(session, settings)
+        except Exception as exc:
+            logger.error("Failed to list open threads: %s", exc)
+            return JSONResponse(
+                status_code=502,
+                content={"detail": f"Failed to list open threads: {exc}"},
+            )
 
-    results: list[CategorizeResult] = []
-    skipped = 0
-    updated_count = 0
+        results: list[CategorizeResult] = []
+        skipped = 0
+        updated_count = 0
 
-    for thread_id in thread_ids:
-        result = await _process_single_ticket(thread_id, allowed)
-        results.append(result)
-        if not result.updated and not result.error:
-            skipped += 1
-        elif result.updated:
-            updated_count += 1
+        for thread_id in thread_ids:
+            result = await _process_single_ticket(session, thread_id, allowed)
+            results.append(result)
+            if not result.updated and not result.error:
+                skipped += 1
+            elif result.updated:
+                updated_count += 1
 
     return CategorizeAllResponse(
         processed=updated_count,

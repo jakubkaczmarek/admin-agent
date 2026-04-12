@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import json
 import logging
 from typing import Any
 
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain_openai import ChatOpenAI
 
 from app.config import Settings
+from app.mcp import call_tool_by_patterns, mcp_session
 from app.prompts.categorize_prompt import (
     CATEGORIZE_PROMPT,
     CATEGORIZE_PROMPT_NO_CATEGORIES,
@@ -71,32 +71,77 @@ async def categorize_message(
     return raw_category
 
 
-def _find_tool_by_patterns(tools: list, patterns: list[str]) -> Any:
-    """Find an MCP tool by matching its name or description against patterns.
+async def list_open_threads(session, settings: Settings) -> list[int]:
+    """List all open thread IDs using an existing MCP session.
 
     Args:
-        tools: List of loaded MCP tools.
-        patterns: List of substring patterns to match against tool name/description.
+        session: Active MCP session.
+        settings: Application settings.
 
     Returns:
-        The first matching tool, or None if not found.
+        A list of open thread IDs (integers).
+
+    Raises:
+        RuntimeError: If no matching tool is found.
     """
-    for tool in tools:
-        searchable = f"{tool.name} {getattr(tool, 'description', '')}".lower()
-        if any(pattern in searchable for pattern in patterns):
-            return tool
-    return None
+    result = await call_tool_by_patterns(
+        session, ["get", "support_threads"], status="active"
+    )
+
+    # The MCP tool returns a list of content blocks like:
+    #   [{"type": "text", "text": '{"success":true,"data":{"data":[{"threadId":14,...}]}}'}]
+    # We need to parse the JSON string and extract threadId values.
+    raw_text = None
+    if isinstance(result, list) and len(result) > 0:
+        for block in result:
+            if isinstance(block, dict) and block.get("type") == "text":
+                raw_text = block.get("text")
+                break
+    elif isinstance(result, dict):
+        raw_text = result.get("text") or result.get("data")
+
+    if not raw_text:
+        logger.warning("No text content in list threads response: %s", result)
+        return []
+
+    try:
+        parsed = json.loads(raw_text)
+    except json.JSONDecodeError:
+        logger.error("Failed to parse list threads response as JSON: %s", raw_text[:200])
+        return []
+
+    # Navigate: {success: true, data: {data: [...]}}
+    wrapper = parsed.get("data") if isinstance(parsed, dict) else parsed
+    if isinstance(wrapper, dict):
+        items = wrapper.get("data") or wrapper.get("threads") or wrapper.get("results") or []
+    elif isinstance(wrapper, list):
+        items = wrapper
+    else:
+        logger.warning("Unexpected parsed structure: %s", wrapper)
+        return []
+
+    thread_ids: list[int] = []
+    for item in items:
+        if isinstance(item, dict):
+            tid = item.get("threadId")
+            if tid is not None:
+                try:
+                    thread_ids.append(int(tid))
+                except (ValueError, TypeError):
+                    logger.warning("Skipping non-numeric threadId: %s", tid)
+        elif isinstance(item, (int, float)):
+            thread_ids.append(int(item))
+
+    logger.info("Found %d open threads", len(thread_ids))
+    return thread_ids
 
 
-async def get_thread_details(
-    ticket_id: int,
-    settings: Settings,
-) -> dict[str, Any]:
-    """Retrieve thread details from the MCP server.
+async def get_thread_details(session, thread_id: int) -> dict[str, Any]:
+    """Retrieve thread details using an existing MCP session.
 
     Args:
-        ticket_id: The ticket/thread ID.
-        settings: Application settings.
+        session: Active MCP session.
+        thread_id: The numeric thread ID.
 
     Returns:
         The thread details dictionary.
@@ -104,112 +149,51 @@ async def get_thread_details(
     Raises:
         RuntimeError: If no matching tool is found.
     """
-    client = MultiServerMCPClient({
-        "ticketing": {
-            "url": settings.mcp_server_url,
-            "transport": settings.mcp_transport,
-        },
-    })
+    result = await call_tool_by_patterns(
+        session, ["get", "support_thread_by_id"], threadId=thread_id
+    )
 
-    async with client.session("ticketing") as session:
-        tools = await load_mcp_tools(session)
+    # The MCP tool returns a list of content blocks like:
+    #   [{"type": "text", "text": '{"success":true,"data":{"threadId":14,...}}'}]
+    raw_text = None
+    if isinstance(result, list) and len(result) > 0:
+        for block in result:
+            if isinstance(block, dict) and block.get("type") == "text":
+                raw_text = block.get("text")
+                break
+    elif isinstance(result, dict):
+        raw_text = result.get("text")
 
-        get_tool = _find_tool_by_patterns(
-            tools, ["get", "thread", "details"]
-        )
-        if not get_tool:
-            tool_names = [t.name for t in tools]
-            raise RuntimeError(
-                f"Get thread tool not found. Available tools: {tool_names}"
-            )
+    if raw_text:
+        try:
+            parsed = json.loads(raw_text)
+            # Navigate: {success: true, data: {...}}
+            if isinstance(parsed, dict) and "data" in parsed:
+                return parsed["data"]
+            return parsed
+        except json.JSONDecodeError:
+            logger.warning("Failed to parse thread details as JSON: %s", raw_text[:200])
 
-        result = await get_tool.ainvoke({"supportThreadId": ticket_id})
-        return result
+    return result if isinstance(result, dict) else {}
 
 
-async def update_thread_category(
-    ticket_id: int,
-    category: str,
-    settings: Settings,
-) -> None:
-    """Update a thread's category via the MCP server.
+async def update_thread_category(session, thread_id: int, category: str) -> None:
+    """Update a thread's category using an existing MCP session.
 
     Args:
-        ticket_id: The ticket/thread ID.
+        session: Active MCP session.
+        thread_id: The numeric thread ID.
         category: The resolved category name.
-        settings: Application settings.
 
     Raises:
         RuntimeError: If no matching tool is found.
     """
-    client = MultiServerMCPClient({
-        "ticketing": {
-            "url": settings.mcp_server_url,
-            "transport": settings.mcp_transport,
-        },
-    })
+    await call_tool_by_patterns(
+        session,
+        ["update", "thread_category"],
+        threadId=thread_id,
+        category=category,
+        userName="SupportAgent",
+    )
 
-    async with client.session("ticketing") as session:
-        tools = await load_mcp_tools(session)
-
-        update_tool = _find_tool_by_patterns(
-            tools, ["update", "patch", "category"]
-        )
-        if not update_tool:
-            tool_names = [t.name for t in tools]
-            raise RuntimeError(
-                f"Update thread tool not found. Available tools: {tool_names}"
-            )
-
-        await update_tool.ainvoke({
-            "supportThreadId": ticket_id,
-            "categoryName": category,
-            "userName": "SupportAgent",
-        })
-
-    logger.info("Updated thread %d with category: %s", ticket_id, category)
-
-
-async def list_open_threads(settings: Settings) -> list[int]:
-    """List all open thread IDs from the MCP server.
-
-    Args:
-        settings: Application settings.
-
-    Returns:
-        A list of open thread IDs.
-
-    Raises:
-        RuntimeError: If no matching tool is found.
-    """
-    client = MultiServerMCPClient({
-        "ticketing": {
-            "url": settings.mcp_server_url,
-            "transport": settings.mcp_transport,
-        },
-    })
-
-    async with client.session("ticketing") as session:
-        tools = await load_mcp_tools(session)
-
-        list_tool = _find_tool_by_patterns(
-            tools, ["list", "threads", "all"]
-        )
-        if not list_tool:
-            tool_names = [t.name for t in tools]
-            raise RuntimeError(
-                f"List threads tool not found. Available tools: {tool_names}"
-            )
-
-        result = await list_tool.ainvoke({})
-        # The result may be a list of dicts with 'id' key, or a list of IDs
-        if isinstance(result, list):
-            threads = []
-            for item in result:
-                if isinstance(item, dict):
-                    threads.append(item.get("id"))
-                else:
-                    threads.append(item)
-            return [tid for tid in threads if tid is not None]
-        logger.warning("Unexpected result from list threads tool: %s", result)
-        return []
+    logger.info("Updated thread %d with category: %s", thread_id, category)

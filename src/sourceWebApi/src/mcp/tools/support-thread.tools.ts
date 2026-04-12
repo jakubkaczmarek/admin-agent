@@ -46,7 +46,7 @@ export function registerSupportThreadTools(server: McpServer) {
         const thread = await service.createThread(creatorUserName, subject, category || null, message);
 
         const data = {
-          id: thread.id,
+          threadId: thread.id,
           creatorUserName: thread.creatorUserName,
           createdOnDateTime: thread.createdOnDateTime.toISOString(),
           modifierUserName: thread.modifierUserName,
@@ -81,7 +81,7 @@ export function registerSupportThreadTools(server: McpServer) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const createMessageSchema: Record<string, any> = {
-    supportThreadId: z.number().int().positive(),
+    threadId: z.number().int().positive(),
     creatorUserName: z.string(),
     message: z.string(),
   };
@@ -91,9 +91,9 @@ export function registerSupportThreadTools(server: McpServer) {
     'create_support_message',
     'Add a new message to an existing support thread',
     createMessageSchema,
-    async ({ supportThreadId, creatorUserName, message }) => {
+    async ({ threadId, creatorUserName, message }) => {
       try {
-        const thread = await service.getById(supportThreadId);
+        const thread = await service.getById(threadId);
         if (!thread) {
           return {
             content: [
@@ -102,7 +102,7 @@ export function registerSupportThreadTools(server: McpServer) {
                 text: JSON.stringify(
                   {
                     success: false,
-                    error: `Support thread with ID ${supportThreadId} not found`,
+                    error: `Support thread with ID ${threadId} not found`,
                   },
                   null,
                   2
@@ -113,11 +113,11 @@ export function registerSupportThreadTools(server: McpServer) {
           };
         }
 
-        const threadMessage = await service.createMessage(supportThreadId, creatorUserName, message);
+        const threadMessage = await service.createMessage(threadId, creatorUserName, message);
 
         const data = {
-          id: threadMessage.id,
-          supportThreadId: threadMessage.supportThreadId,
+          messageId: threadMessage.id,
+          threadId: threadMessage.supportThreadId,
           creatorUserName: threadMessage.creatorUserName,
           createdOnDateTime: threadMessage.createdOnDateTime.toISOString(),
           message: threadMessage.message,
@@ -148,7 +148,7 @@ export function registerSupportThreadTools(server: McpServer) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const closeThreadSchema: Record<string, any> = {
-    supportThreadId: z.number().int().positive(),
+    threadId: z.number().int().positive(),
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,9 +156,9 @@ export function registerSupportThreadTools(server: McpServer) {
     'close_support_thread',
     'Close a support thread (change status to closed)',
     closeThreadSchema,
-    async ({ supportThreadId }) => {
+    async ({ threadId }) => {
       try {
-        const thread = await service.closeThread(supportThreadId);
+        const thread = await service.closeThread(threadId);
         if (!thread) {
           return {
             content: [
@@ -167,7 +167,7 @@ export function registerSupportThreadTools(server: McpServer) {
                 text: JSON.stringify(
                   {
                     success: false,
-                    error: `Support thread with ID ${supportThreadId} not found`,
+                    error: `Support thread with ID ${threadId} not found`,
                   },
                   null,
                   2
@@ -179,7 +179,7 @@ export function registerSupportThreadTools(server: McpServer) {
         }
 
         const data = {
-          id: thread.id,
+          threadId: thread.id,
           creatorUserName: thread.creatorUserName,
           createdOnDateTime: thread.createdOnDateTime.toISOString(),
           modifierUserName: thread.modifierUserName,
@@ -222,7 +222,7 @@ export function registerSupportThreadTools(server: McpServer) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   server.tool(
     'get_support_threads',
-    'Get a paginated list of support threads with optional status filter',
+    'Get a paginated list of support threads with optional status filter. The "status" parameter accepts string values: "active" (integer 0) or "closed" (integer 1). If omitted, returns threads with any status.',
     getThreadsSchema,
     async ({ pageIndex = 0, pageSize = 20, status }) => {
       try {
@@ -238,7 +238,7 @@ export function registerSupportThreadTools(server: McpServer) {
           pageSize: result.pageSize,
           totalCount: result.totalCount,
           data: result.data.map((thread) => ({
-            id: thread.id,
+            threadId: thread.id,
             creatorUserName: thread.creatorUserName,
             createdOnDateTime: thread.createdOnDateTime.toISOString(),
             modifierUserName: thread.modifierUserName,
@@ -274,7 +274,7 @@ export function registerSupportThreadTools(server: McpServer) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getThreadByIdSchema: Record<string, any> = {
-    supportThreadId: z.number().int().positive(),
+    threadId: z.number().int().positive(),
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -282,9 +282,9 @@ export function registerSupportThreadTools(server: McpServer) {
     'get_support_thread_by_id',
     'Get a full support thread with all its messages',
     getThreadByIdSchema,
-    async ({ supportThreadId }) => {
+    async ({ threadId }) => {
       try {
-        const thread = await service.getByIdWithMessages(supportThreadId);
+        const thread = await service.getByIdWithMessages(threadId);
         if (!thread) {
           return {
             content: [
@@ -293,7 +293,7 @@ export function registerSupportThreadTools(server: McpServer) {
                 text: JSON.stringify(
                   {
                     success: false,
-                    error: `Support thread with ID ${supportThreadId} not found`,
+                    error: `Support thread with ID ${threadId} not found`,
                   },
                   null,
                   2
@@ -305,7 +305,7 @@ export function registerSupportThreadTools(server: McpServer) {
         }
 
         const data = {
-          id: thread.id,
+          threadId: thread.id,
           creatorUserName: thread.creatorUserName,
           createdOnDateTime: thread.createdOnDateTime.toISOString(),
           modifierUserName: thread.modifierUserName,
@@ -314,8 +314,8 @@ export function registerSupportThreadTools(server: McpServer) {
           category: thread.category,
           status: supportThreadStatusToString(thread.status),
           messages: thread.messages.map((msg) => ({
-            id: msg.id,
-            supportThreadId: msg.supportThreadId,
+            messageId: msg.id,
+            threadId: msg.supportThreadId,
             creatorUserName: msg.creatorUserName,
             createdOnDateTime: msg.createdOnDateTime.toISOString(),
             message: msg.message,
@@ -347,7 +347,7 @@ export function registerSupportThreadTools(server: McpServer) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateThreadCategorySchema: Record<string, any> = {
-    supportThreadId: z.number().int().positive(),
+    threadId: z.number().int().positive(),
     category: z.string(),
     userName: z.string(),
   };
@@ -357,7 +357,7 @@ export function registerSupportThreadTools(server: McpServer) {
     'update_thread_category',
     'Update the category of a support thread. Only allowed when userName is "SupportAgent". Adds an automatic message documenting the change.',
     updateThreadCategorySchema,
-    async ({ supportThreadId, category, userName }) => {
+    async ({ threadId, category, userName }) => {
       try {
         // Validate userName is exactly 'SupportAgent'
         if (userName !== 'SupportAgent') {
@@ -400,7 +400,7 @@ export function registerSupportThreadTools(server: McpServer) {
         }
 
         // Check thread exists
-        const thread = await service.getById(supportThreadId);
+        const thread = await service.getById(threadId);
         if (!thread) {
           return {
             content: [
@@ -409,7 +409,7 @@ export function registerSupportThreadTools(server: McpServer) {
                 text: JSON.stringify(
                   {
                     success: false,
-                    error: `Support thread with ID ${supportThreadId} not found`,
+                    error: `Support thread with ID ${threadId} not found`,
                   },
                   null,
                   2
@@ -422,13 +422,13 @@ export function registerSupportThreadTools(server: McpServer) {
 
         // Add message documenting the change
         await service.createMessage(
-          supportThreadId,
+          threadId,
           'SupportAgent',
           `SupportAgent changed category to "${category}"`
         );
 
         // Update the category
-        const updatedThread = await service.updateCategory(supportThreadId, category, userName);
+        const updatedThread = await service.updateCategory(threadId, category, userName);
         if (!updatedThread) {
           return {
             content: [
@@ -449,7 +449,7 @@ export function registerSupportThreadTools(server: McpServer) {
         }
 
         const data = {
-          id: updatedThread.id,
+          threadId: updatedThread.id,
           creatorUserName: updatedThread.creatorUserName,
           createdOnDateTime: updatedThread.createdOnDateTime.toISOString(),
           modifierUserName: updatedThread.modifierUserName,
