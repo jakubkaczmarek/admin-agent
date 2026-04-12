@@ -3,16 +3,28 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from openai import OpenAIError
 
+from app.agents.categorize_agent import (
+    CategorizationError,
+    categorize_message,
+    get_thread_details,
+    list_open_threads,
+    update_thread_category,
+)
 from app.agents.ticket_agent import (
     TicketGenerationError,
     execute_ticket_generation,
 )
 from app.config import settings
+from app.models.categorize import (
+    CategorizeAllResponse,
+    CategorizeRequest,
+    CategorizeResult,
+)
 from app.models.ticket import (
     GenerateTicketsRequest,
     GenerateTicketsResponse,
@@ -96,3 +108,108 @@ async def generate_tickets(request: GenerateTicketsRequest):
 async def health_check():
     """Health check endpoint."""
     return {"status": "ok"}
+
+
+# --- Categorization endpoints ---
+
+categorize_router = APIRouter(prefix="/tickets", tags=["categorization"])
+
+
+async def _process_single_ticket(
+    ticket_id: int,
+    allowed_categories: list[str] | None,
+) -> CategorizeResult:
+    """Process a single ticket: check category, categorize if missing, update."""
+    try:
+        thread = await get_thread_details(ticket_id, settings)
+
+        # Check if category already exists
+        category = thread.get("category")
+        if category and str(category).strip():
+            return CategorizeResult(id=ticket_id, updated=False)
+
+        # Extract first message content
+        messages = thread.get("messages", [])
+        if not messages:
+            return CategorizeResult(
+                id=ticket_id,
+                updated=False,
+                error="No messages found in thread",
+            )
+
+        first_message = messages[0].get("message", "")
+        if not first_message:
+            return CategorizeResult(
+                id=ticket_id,
+                updated=False,
+                error="First message is empty",
+            )
+
+        # Categorize the message
+        category = await categorize_message(
+            first_message, allowed_categories, settings
+        )
+
+        # Update the thread category
+        await update_thread_category(ticket_id, category, settings)
+
+        return CategorizeResult(id=ticket_id, category=category, updated=True)
+
+    except CategorizationError as exc:
+        logger.warning("Categorization failed for ticket %d: %s", ticket_id, exc)
+        return CategorizeResult(id=ticket_id, updated=False, error=str(exc))
+    except Exception as exc:
+        logger.error(
+            "Failed to process ticket %d: %s",
+            ticket_id,
+            exc,
+            exc_info=True,
+        )
+        return CategorizeResult(id=ticket_id, updated=False, error=str(exc))
+
+
+@categorize_router.post("/{id}/categorize", response_model=CategorizeResult)
+async def categorize_ticket(id: int, request: CategorizeRequest):
+    """Categorize a single ticket by its ID."""
+    allowed = request.allowed_categories
+    result = await _process_single_ticket(id, allowed)
+    return result
+
+
+@categorize_router.post(
+    "/all/categorize", response_model=CategorizeAllResponse
+)
+async def categorize_all_tickets(request: CategorizeRequest):
+    """Categorize all open tickets that are missing a category."""
+    allowed = request.allowed_categories
+
+    # Get all open threads
+    try:
+        thread_ids = await list_open_threads(settings)
+    except Exception as exc:
+        logger.error("Failed to list open threads: %s", exc)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": f"Failed to list open threads: {exc}"},
+        )
+
+    results: list[CategorizeResult] = []
+    skipped = 0
+    updated_count = 0
+
+    for thread_id in thread_ids:
+        result = await _process_single_ticket(thread_id, allowed)
+        results.append(result)
+        if not result.updated and not result.error:
+            skipped += 1
+        elif result.updated:
+            updated_count += 1
+
+    return CategorizeAllResponse(
+        processed=updated_count,
+        skipped=skipped,
+        results=results,
+    )
+
+
+app.include_router(categorize_router)
