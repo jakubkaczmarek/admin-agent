@@ -101,6 +101,25 @@ export class SupportThreadRepository {
     return this.getById(id);
   }
 
+  async updateCategory(id: number, category: string, modifierUserName: string): Promise<ISupportThread | null> {
+    const pool = await getPool();
+    const request = pool.request();
+
+    request.input('id', sql.Int, id);
+    request.input('category', sql.NVarChar(256), category);
+    request.input('modifierUserName', sql.NVarChar(256), modifierUserName);
+
+    await request.query(`
+      UPDATE SupportThreads
+      SET Category = @category,
+          ModifierUserName = @modifierUserName,
+          ModifiedOnDateTime = SYSUTCDATETIME()
+      WHERE Id = @id
+    `);
+
+    return this.getById(id);
+  }
+
   async getAll(
     pageIndex: number,
     pageSize: number,

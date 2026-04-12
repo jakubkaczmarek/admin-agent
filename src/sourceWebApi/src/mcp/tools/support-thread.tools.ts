@@ -344,4 +344,141 @@ export function registerSupportThreadTools(server: McpServer) {
       }
     }
   );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateThreadCategorySchema: Record<string, any> = {
+    supportThreadId: z.number().int().positive(),
+    category: z.string(),
+    userName: z.string(),
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  server.tool(
+    'update_thread_category',
+    'Update the category of a support thread. Only allowed when userName is "SupportAgent". Adds an automatic message documenting the change.',
+    updateThreadCategorySchema,
+    async ({ supportThreadId, category, userName }) => {
+      try {
+        // Validate userName is exactly 'SupportAgent'
+        if (userName !== 'SupportAgent') {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: 'Only SupportAgent can update thread category',
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // Validate category is not empty
+        if (!category || category.trim() === '') {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: 'Category must be a non-empty string',
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // Check thread exists
+        const thread = await service.getById(supportThreadId);
+        if (!thread) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: `Support thread with ID ${supportThreadId} not found`,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // Add message documenting the change
+        await service.createMessage(
+          supportThreadId,
+          'SupportAgent',
+          `SupportAgent changed category to "${category}"`
+        );
+
+        // Update the category
+        const updatedThread = await service.updateCategory(supportThreadId, category, userName);
+        if (!updatedThread) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    success: false,
+                    error: 'Failed to update thread category',
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        const data = {
+          id: updatedThread.id,
+          creatorUserName: updatedThread.creatorUserName,
+          createdOnDateTime: updatedThread.createdOnDateTime.toISOString(),
+          modifierUserName: updatedThread.modifierUserName,
+          modifiedOnDateTime: updatedThread.modifiedOnDateTime.toISOString(),
+          subject: updatedThread.subject,
+          category: updatedThread.category,
+          status: supportThreadStatusToString(updatedThread.status),
+        };
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, data }, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: false, error: errorMessage }, null, 2),
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
 }
