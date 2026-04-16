@@ -1,6 +1,7 @@
 const BaseConfig: Record<string, string> = {
   TICKETS_API_BASE_URL: 'http://localhost:3000',
-  GENERATOR_API_BASE_URL: 'http://localhost:3001'
+  GENERATOR_API_BASE_URL: 'http://localhost:3001',
+  JOB_POLLING_INTERVAL_MS: '5000'
 };
 
 const getAppConfigOrDefaultValue = (key: string): string => {
@@ -18,5 +19,6 @@ const getAppConfigOrDefaultValue = (key: string): string => {
 export const AppConsts = {
   appBaseUrl: typeof window !== 'undefined' ? window.location.origin : '',
   ticketsApiBaseUrl: getAppConfigOrDefaultValue('TICKETS_API_BASE_URL'),
-  generatorApiBaseUrl: getAppConfigOrDefaultValue('GENERATOR_API_BASE_URL')
+  generatorApiBaseUrl: getAppConfigOrDefaultValue('GENERATOR_API_BASE_URL'),
+  jobPollingIntervalMs: parseInt(getAppConfigOrDefaultValue('JOB_POLLING_INTERVAL_MS'), 10)
 };

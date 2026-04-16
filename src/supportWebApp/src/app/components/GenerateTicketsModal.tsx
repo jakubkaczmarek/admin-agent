@@ -20,11 +20,11 @@ const agentApi = AgentApiClient.getInstance();
 interface GenerateTicketsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTicketsGenerated?: () => void;
+  onJobStarted?: (jobId: string) => void;
 }
 
 export const GenerateTicketsModal = React.forwardRef<HTMLDivElement, GenerateTicketsModalProps>(
-  ({ open, onOpenChange, onTicketsGenerated }, ref) => {
+  ({ open, onOpenChange, onJobStarted }, ref) => {
     const [ticketsCount, setTicketsCount] = useState(5);
     const [category, setCategory] = useState('');
     const [customCategory, setCustomCategory] = useState('');
@@ -41,17 +41,13 @@ export const GenerateTicketsModal = React.forwardRef<HTMLDivElement, GenerateTic
 
     setSubmitting(true);
     try {
-      await agentApi.supportTickets.generateTickets({
-        ticketsCount,
-        theme
-      });
+      const { jobId } = await agentApi.supportTickets.generateTickets({ ticketsCount, theme });
       setTicketsCount(5);
       setCategory('');
       setCustomCategory('');
       setUseCustomCategory(false);
       onOpenChange(false);
-      onTicketsGenerated?.();
-      toast.success(`${ticketsCount} ticket(s) generated successfully`);
+      onJobStarted?.(jobId);
     } catch (error) {
       console.error('Failed to generate tickets:', error);
       toast.error('Failed to generate tickets');

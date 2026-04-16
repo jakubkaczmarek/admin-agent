@@ -11,8 +11,12 @@ import { CreateTicketModal } from '../components/CreateTicketModal';
 import { QuickActions } from '../components/QuickActions';
 import { formatDistanceToNow } from 'date-fns';
 import { TicketsApiClient, type SupportThreadSummary, ThreadStatus } from '../../services/tickets-api.client';
+import { AgentApiClient } from '../../services/agent-api.client';
+import { AppConsts } from '../../AppConsts';
+import { toast } from 'sonner';
 
 const ticketsApi = TicketsApiClient.getInstance();
+const agentApi = AgentApiClient.getInstance();
 
 function mapThreadStatusToUi(status: ThreadStatus): TicketStatus {
   return status === ThreadStatus.Closed ? 'closed' : 'active';
@@ -27,6 +31,7 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<TicketStatus | 'all'>('all');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [tickets, setTickets] = useState<SupportThreadSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -74,6 +79,32 @@ export default function Dashboard() {
     fetchTickets();
   };
 
+  const handleJobStarted = (jobId: string) => {
+    setActiveJobId(jobId);
+    setShowQuickActions(false);
+  };
+
+  useEffect(() => {
+    if (!activeJobId) return;
+    const interval = setInterval(async () => {
+      try {
+        const job = await agentApi.jobs.getJob(activeJobId);
+        if (job.status === 'completed') {
+          setActiveJobId(null);
+          handleTicketCreated();
+          toast.success('Quick action completed successfully');
+        } else if (job.status === 'error') {
+          setActiveJobId(null);
+          toast.error(`Quick action failed: ${job.error ?? 'Unknown error'}`);
+        }
+      } catch {
+        setActiveJobId(null);
+        toast.error('Failed to poll job status');
+      }
+    }, AppConsts.jobPollingIntervalMs);
+    return () => clearInterval(interval);
+  }, [activeJobId]);
+
   if (!currentUser) return null;
 
   return (
@@ -89,9 +120,10 @@ export default function Dashboard() {
               variant="ghost"
               size="sm"
               onClick={() => setShowQuickActions(!showQuickActions)}
+              disabled={!!activeJobId}
             >
               <Zap className="w-4 h-4 mr-2" />
-              Quick Actions
+              {activeJobId ? 'Processing quick action...' : 'Quick Actions'}
             </Button>
             <span className="text-sm text-neutral-600">{currentUser}</span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
@@ -104,7 +136,7 @@ export default function Dashboard() {
 
       {showQuickActions && (
         <div className="bg-white border-b px-6 py-4">
-          <QuickActions onTicketsChanged={handleTicketCreated} />
+          <QuickActions onTicketsChanged={handleTicketCreated} onJobStarted={handleJobStarted} />
         </div>
       )}
 
