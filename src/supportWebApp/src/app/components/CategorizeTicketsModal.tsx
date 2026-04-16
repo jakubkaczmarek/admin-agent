@@ -18,11 +18,11 @@ const agentApi = AgentApiClient.getInstance();
 interface CategorizeTicketsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTicketsCategorized?: () => void;
+  onJobStarted?: (jobId: string) => void;
 }
 
 export const CategorizeTicketsModal = React.forwardRef<HTMLDivElement, CategorizeTicketsModalProps>(
-  ({ open, onOpenChange, onTicketsCategorized }, ref) => {
+  ({ open, onOpenChange, onJobStarted }, ref) => {
     const [limitCategories, setLimitCategories] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
@@ -30,13 +30,10 @@ export const CategorizeTicketsModal = React.forwardRef<HTMLDivElement, Categoriz
       e.preventDefault();
       setSubmitting(true);
       try {
-        const allowedCategories = limitCategories
-          ? [...TICKET_CATEGORIES]
-          : undefined;
-        await agentApi.supportTickets.categorizeTickets(allowedCategories);
+        const allowedCategories = limitCategories ? [...TICKET_CATEGORIES] : undefined;
+        const { jobId } = await agentApi.supportTickets.categorizeTickets(allowedCategories);
         onOpenChange(false);
-        onTicketsCategorized?.();
-        toast.success('Tickets categorized successfully');
+        onJobStarted?.(jobId);
       } catch (error) {
         console.error('Failed to categorize tickets:', error);
         toast.error('Failed to categorize tickets');

@@ -8,26 +8,51 @@ export interface GenerateTicketsInput {
   theme: string;
 }
 
+export interface JobAcceptedResponse {
+  jobId: string;
+  status: string;
+}
+
+export interface JobStatusResponse {
+  jobId: string;
+  status: 'idle' | 'active' | 'completed' | 'error';
+  startTime: string | null;
+  endTime: string | null;
+  executionTime: number | null;
+  result: any;
+  error: string | null;
+}
+
 // ============= API Services =============
+
+export class JobsApiService extends ServiceProxy {
+  constructor(baseUrl: string) {
+    super(baseUrl);
+  }
+
+  async getJob(jobId: string): Promise<JobStatusResponse> {
+    return this.requestRaw<JobStatusResponse>('GET', `/jobs/${jobId}`);
+  }
+}
 
 export class SupportTicketsAgentApiService extends ServiceProxy {
   constructor(baseUrl: string) {
     super(baseUrl);
   }
 
-  async generateTickets(input: GenerateTicketsInput): Promise<void> {
-    await this.request<void>('POST', '/tickets/generate', input);
+  async generateTickets(input: GenerateTicketsInput): Promise<JobAcceptedResponse> {
+    return this.requestRaw<JobAcceptedResponse>('POST', '/tickets/generate', input);
   }
 
-  async categorizeTickets(allowedCategories?: string[]): Promise<void> {
+  async categorizeTickets(allowedCategories?: string[]): Promise<JobAcceptedResponse> {
     const payload = allowedCategories && allowedCategories.length > 0
       ? { allowedCategories }
       : undefined;
-    await this.request<void>('POST', '/tickets/all/categorize', payload);
+    return this.requestRaw<JobAcceptedResponse>('POST', '/tickets/all/categorize', payload);
   }
-  
-  async autocompleteTickets(): Promise<void> {
-    await this.request<void>('POST', '/tickets/all/autocomplete');
+
+  async autocompleteTickets(): Promise<JobAcceptedResponse> {
+    return this.requestRaw<JobAcceptedResponse>('POST', '/tickets/all/autocomplete');
   }
 }
 
@@ -36,11 +61,13 @@ export class SupportTicketsAgentApiService extends ServiceProxy {
 export class AgentApiClient {
   private static instance: AgentApiClient;
   public supportTickets: SupportTicketsAgentApiService;
+  public jobs: JobsApiService;
   private baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
     this.supportTickets = new SupportTicketsAgentApiService(this.baseUrl);
+    this.jobs = new JobsApiService(this.baseUrl);
   }
 
   static getInstance(): AgentApiClient {

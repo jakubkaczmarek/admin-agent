@@ -8,8 +8,8 @@ from langchain_openai import ChatOpenAI
 
 from app.config import Settings
 from app.mcp import call_tool_by_patterns, mcp_session
-from app.models.ticket import TicketPayload
-from app.prompts.ticket_prompt import generation_prompt
+from app.langchain.models.ticket import TicketPayload
+from app.langchain.prompts.ticket_prompt import generation_prompt
 
 logger = logging.getLogger(__name__)
 

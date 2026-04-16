@@ -10,7 +10,13 @@ import { toast } from 'sonner';
 const agentApi = AgentApiClient.getInstance();
 const ticketsApi = TicketsApiClient.getInstance();
 
-export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => void }) {
+export function QuickActions({
+  onTicketsChanged,
+  onJobStarted,
+}: {
+  onTicketsChanged?: () => void;
+  onJobStarted?: (jobId: string) => void;
+}) {
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
   const [categorizeModalOpen, setCategorizeModalOpen] = useState(false);
   const [autocompleting, setAutocompleting] = useState(false);
@@ -37,9 +43,8 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
   const handleAutocompleteTickets = async () => {
     setAutocompleting(true);
     try {
-      await agentApi.supportTickets.autocompleteTickets();
-      toast.success('Tickets autocompleted successfully');
-      onTicketsChanged?.();
+      const { jobId } = await agentApi.supportTickets.autocompleteTickets();
+      onJobStarted?.(jobId);
     } catch (error) {
       console.error('Failed to autocomplete tickets:', error);
       toast.error('Failed to autocomplete tickets');
@@ -58,7 +63,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           className="justify-start"
         >
           <Wand2 className="w-4 h-4" />
-          <span className="ml-2">Generate Tickets</span>
+          <span className="ml-2">Generate</span>
         </Button>
         <Button
           variant="outline"
@@ -66,7 +71,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           className="justify-start"
         >
           <Tags className="w-4 h-4" />
-          <span className="ml-2">Categorize Tickets</span>
+          <span className="ml-2">Categorize</span>
         </Button>
         <Button
           variant="outline"
@@ -79,7 +84,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           ) : (
             <Sparkles className="w-4 h-4" />
           )}
-          <span className="ml-2">{autocompleting ? 'Autocompleting...' : 'Autocomplete Tickets'}</span>
+          <span className="ml-2">{autocompleting ? 'Completing...' : 'Complete'}</span>
         </Button>
         <Button
           variant="destructive"
@@ -95,8 +100,8 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           <span className="ml-2">{deleting ? 'Deleting...' : 'Delete All'}</span>
         </Button>
       </div>
-      <GenerateTicketsModal open={generateModalOpen} onOpenChange={setGenerateModalOpen} onTicketsGenerated={onTicketsChanged} />
-      <CategorizeTicketsModal open={categorizeModalOpen} onOpenChange={setCategorizeModalOpen} onTicketsCategorized={onTicketsChanged} />
+      <GenerateTicketsModal open={generateModalOpen} onOpenChange={setGenerateModalOpen} onJobStarted={onJobStarted} />
+      <CategorizeTicketsModal open={categorizeModalOpen} onOpenChange={setCategorizeModalOpen} onJobStarted={onJobStarted} />
     </div>
   );
 }
