@@ -9,10 +9,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.jobs import job_store, schedule_job
+from app.crewai.support_thread_reply_crew import process_thread as autoreply_thread
 from app.langchain.agents.autocomplete_agent import process_thread as autocomplete_thread
 from app.langchain.agents.categorize_agent import process_thread as categorize_thread
 from app.langchain.agents.ticket_agent import execute_ticket_generation
 from app.langchain.models.autocomplete import AutocompleteResponse
+from app.langchain.models.autoreply import AutoreplyResponse
 from app.langchain.models.categorize import CategorizeAllResponse, CategorizeRequest
 from app.langchain.models.jobs import JobAcceptedResponse, JobResponse
 from app.langchain.models.ticket import (
@@ -150,3 +152,27 @@ async def categorize_all_tickets(request: CategorizeRequest, background_tasks: B
 
 
 app.include_router(categorize_router)
+
+
+# --- Autoreply endpoint ---
+
+autoreply_router = APIRouter(prefix="/tickets", tags=["autoreply"])
+
+
+@autoreply_router.post("/all/autoreply", response_model=JobAcceptedResponse, status_code=202)
+async def autoreply_all_tickets(background_tasks: BackgroundTasks):
+    """For every open ticket, use the CrewAI TicketReplyCrew to draft and send a reply."""
+    async def _run() -> AutoreplyResponse:
+        results = await run_for_all_threads(
+            settings,
+            functools.partial(autoreply_thread, settings=settings),
+        )
+        processed = sum(1 for r in results if r.action == "replied")
+        skipped = len(results) - processed
+        return AutoreplyResponse(processed=processed, skipped=skipped, results=results)
+
+    job_id = await schedule_job(background_tasks, _run)
+    return JobAcceptedResponse(jobId=job_id, status="idle")
+
+
+app.include_router(autoreply_router)

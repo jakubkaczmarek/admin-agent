@@ -1,0 +1,9 @@
+name: create_support_message
+description: Post a reply message to a support thread as SupportAgent.
+inputs:
+  ticket_id:
+    type: int
+    description: The numeric ID of the support thread.
+  content:
+    type: str
+    description: The message body to send.

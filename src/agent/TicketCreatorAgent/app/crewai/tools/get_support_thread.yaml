@@ -1,0 +1,6 @@
+name: get_support_thread_by_id
+description: Fetch full support thread data including all messages by thread ID.
+inputs:
+  ticket_id:
+    type: int
+    description: The numeric ID of the support thread.

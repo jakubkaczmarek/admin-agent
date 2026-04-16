@@ -1,0 +1,38 @@
+  error: subprocess-exited-with-error
+  
+  Preparing metadata (pyproject.toml) did not run successfully.
+  exit code: 1
+  
+  [21 lines of output]
+  + C:\Users\Kuba\AppData\Local\Programs\Python\Python314\python.exe C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d\vendored-meson\meson\meson.py setup C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d\.mesonpy-j_hvnjgj -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d\.mesonpy-j_hvnjgj\meson-python-native-file.ini
+  The Meson build system
+  Version: 1.2.99
+  Source dir: C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d
+  Build dir: C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d\.mesonpy-j_hvnjgj
+  Build type: native build
+  Project name: NumPy
+  Project version: 1.26.4
+  WARNING: Failed to activate VS environment: Could not parse vswhere.exe output
+  
+  ..\meson.build:1:0: ERROR: Unknown compiler(s): [['icl'], ['cl'], ['cc'], ['gcc'], ['clang'], ['clang-cl'], ['pgcc']]
+  The following exception(s) were encountered:
+  Running `icl ""` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `cl /?` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `cc --version` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `gcc --version` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `clang --version` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `clang-cl /?` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  Running `pgcc --version` gave "[WinError 2] Nie mo¿na odnaleŸæ okreœlonego pliku"
+  
+  A full log can be found at C:\Users\Kuba\AppData\Local\Temp\pip-install-vuzuqbdu\numpy_8d6dadd681c34b54bf423963ee99924d\.mesonpy-j_hvnjgj\meson-logs\meson-log.txt
+  [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+Encountered error while generating package metadata.
+
+numpy
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.

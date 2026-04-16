@@ -5,3 +5,4 @@ langchain-openai
 langchain-mcp-adapters
 pydantic-settings
 python-dotenv
+crewai>=0.80.0
