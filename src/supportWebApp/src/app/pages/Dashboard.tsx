@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Ticket, Plus, LogOut, Zap } from 'lucide-react';
+import { Ticket, Plus, LogOut, Zap, Loader2 } from 'lucide-react';
 import type { TicketStatus } from '../lib/mockData';
 import { getCurrentUser, clearCurrentUser } from '../lib/auth';
 import { CreateTicketModal } from '../components/CreateTicketModal';
@@ -122,7 +122,11 @@ export default function Dashboard() {
               onClick={() => setShowQuickActions(!showQuickActions)}
               disabled={!!activeJobId}
             >
-              <Zap className="w-4 h-4 mr-2" />
+              {activeJobId ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4 mr-2" />
+              )}
               {activeJobId ? 'Processing quick action...' : 'Quick Actions'}
             </Button>
             <span className="text-sm text-neutral-600">{currentUser}</span>
