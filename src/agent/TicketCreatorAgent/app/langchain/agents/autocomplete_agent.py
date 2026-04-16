@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from langchain_openai import ChatOpenAI
 
 from app.config import Settings
-from app.prompts.autocomplete_prompt import AUTOCOMPLETE_PROMPT
+from app.langchain.prompts.autocomplete_prompt import AUTOCOMPLETE_PROMPT
 
 logger = logging.getLogger(__name__)
 

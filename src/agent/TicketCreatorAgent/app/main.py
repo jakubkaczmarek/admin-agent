@@ -8,30 +8,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from openai import OpenAIError
 
-from app.agents.autocomplete_agent import (
+from app.langchain.agents.autocomplete_agent import (
     ClosedownAgentError,
     assess_closedown,
 )
-from app.agents.categorize_agent import (
+from app.langchain.agents.categorize_agent import (
     CategorizationError,
     categorize_message,
     get_thread_details,
     list_open_threads,
     update_thread_category,
 )
-from app.agents.ticket_agent import (
+from app.langchain.agents.ticket_agent import (
     TicketGenerationError,
     execute_ticket_generation,
 )
 from app.config import Settings, settings
 from app.mcp import call_tool_by_patterns, mcp_session
-from app.models.autocomplete import AutocompleteResponse, AutocompleteResult
-from app.models.categorize import (
+from app.langchain.models.autocomplete import AutocompleteResponse, AutocompleteResult
+from app.langchain.models.categorize import (
     CategorizeAllResponse,
     CategorizeRequest,
     CategorizeResult,
 )
-from app.models.ticket import (
+from app.langchain.models.ticket import (
     GenerateTicketsRequest,
     GenerateTicketsResponse,
     TicketResponseItem,

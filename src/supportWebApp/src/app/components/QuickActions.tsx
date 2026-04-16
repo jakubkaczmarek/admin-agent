@@ -58,7 +58,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           className="justify-start"
         >
           <Wand2 className="w-4 h-4" />
-          <span className="ml-2">Generate Tickets</span>
+          <span className="ml-2">Generate</span>
         </Button>
         <Button
           variant="outline"
@@ -66,7 +66,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           className="justify-start"
         >
           <Tags className="w-4 h-4" />
-          <span className="ml-2">Categorize Tickets</span>
+          <span className="ml-2">Categorize</span>
         </Button>
         <Button
           variant="outline"
@@ -79,7 +79,7 @@ export function QuickActions({ onTicketsChanged }: { onTicketsChanged?: () => vo
           ) : (
             <Sparkles className="w-4 h-4" />
           )}
-          <span className="ml-2">{autocompleting ? 'Autocompleting...' : 'Autocomplete Tickets'}</span>
+          <span className="ml-2">{autocompleting ? 'Completing...' : 'Complete'}</span>
         </Button>
         <Button
           variant="destructive"

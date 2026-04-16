@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 
 from app.config import Settings
 from app.mcp import call_tool_by_patterns, mcp_session
-from app.prompts.categorize_prompt import (
+from app.langchain.prompts.categorize_prompt import (
     CATEGORIZE_PROMPT,
     CATEGORIZE_PROMPT_NO_CATEGORIES,
 )
