@@ -1,0 +1,27 @@
+PAYROLL & COMPENSATION — ACME COMPANY
+======================================
+
+Payroll at Acme Company is managed by the Finance department in coordination with HR. Payroll processing is handled via ADP Workforce Now, integrated with Workday.
+
+PAYROLL SCHEDULE
+- US employees: paid bi-weekly (every other Friday)
+- UK and EU employees: paid monthly (last business day of the month)
+- Singapore employees: paid monthly (25th of the month, or prior business day)
+Payslips are available in ADP Self-Service and Workday.
+
+COMPENSATION PHILOSOPHY
+Acme benchmarks compensation annually against Radford/Aon and Willis Towers Watson salary surveys. Target positioning is at the 65th percentile of market. Total compensation includes base salary, annual performance bonus, and equity (RSUs for Senior Manager and above).
+
+BONUS PROGRAM
+- Annual bonus target: 5–20% of base salary depending on level
+- Bonus payout is linked to company EBITDA performance (50%) and individual performance rating (50%)
+- Bonuses are paid in February following the performance year
+
+EQUITY / RSU PROGRAM
+RSUs vest over 4 years (1-year cliff, monthly thereafter). Grant sizes are reviewed at hire and during annual merit cycles. Equity details are managed through Morgan Stanley Shareworks.
+
+MERIT INCREASES
+Annual merit increases are effective April 1 each year, following Q1 performance reviews. Budget guidance is issued by Finance; managers submit recommendations in Workday for HR and Finance approval.
+
+PAYROLL QUERIES
+Employees with payroll questions should contact payroll@acmeco.com. Changes to banking details must be submitted via ADP Self-Service and take effect the following pay cycle.

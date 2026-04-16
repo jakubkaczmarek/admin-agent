@@ -1,0 +1,26 @@
+SOFTWARE MANAGEMENT — ACME COMPANY
+====================================
+
+Acme Company maintains a centralized Software Catalog managed by the IT department. All software used across the organization must be listed in and approved through this catalog before installation on any company device.
+
+APPROVED SOFTWARE STACK
+- Productivity: Microsoft 365 (Word, Excel, PowerPoint, Teams, Outlook)
+- Development IDEs: JetBrains suite, VS Code
+- Version Control: GitHub Enterprise
+- Project Management: Jira, Confluence
+- Design: Figma
+- BI & Analytics: Power BI, Tableau
+- Security tooling: CrowdStrike Falcon, 1Password Teams
+
+SOFTWARE REQUEST PROCESS
+1. Employee submits a software request via the IT Help Portal (helpdesk.acmeco.com).
+2. IT reviews compatibility, licensing cost, and security posture.
+3. Requests above $500/year require manager approval; above $5,000/year require VP approval.
+4. Approved software is deployed via Microsoft Intune (Windows) or Jamf (macOS).
+5. Unapproved software must not be installed on company hardware under any circumstances.
+
+UPDATES & PATCHING
+All critical OS and software patches are pushed automatically within 72 hours of release. Employees are notified and must not defer restarts beyond 48 hours. Zero-day patches are applied immediately with no deferral window.
+
+SHADOW IT
+Employees found using unapproved SaaS tools for company data will be asked to migrate data immediately. Repeat violations are escalated to HR.

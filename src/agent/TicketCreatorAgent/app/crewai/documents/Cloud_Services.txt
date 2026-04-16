@@ -1,0 +1,23 @@
+CLOUD SERVICES — ACME COMPANY
+===============================
+
+Acme Company operates a cloud-first strategy. The primary cloud provider is Microsoft Azure, with AWS used for specific product workloads and GCP used by the data science team.
+
+CLOUD PLATFORM OVERVIEW
+- Microsoft Azure: Core infrastructure, identity (Entra ID), AcmeCloud SaaS platform, DevOps pipelines
+- Amazon Web Services: Legacy product integrations, S3-based data archiving
+- Google Cloud Platform: BigQuery analytics, ML model training
+
+GOVERNANCE & COST MANAGEMENT
+- All cloud resources are provisioned via Infrastructure-as-Code (Terraform). Manual console-created resources are not permitted in production.
+- Cloud spend is tracked in real time via Azure Cost Management and CloudHealth. Each department has a monthly cloud budget; overruns trigger automated alerts.
+- Resource tagging is mandatory: every resource must carry tags for Owner, CostCenter, Environment, and Project.
+
+APPROVED CLOUD SERVICES
+A whitelist of approved cloud services is maintained by the Cloud Platform team. Teams wishing to adopt a new cloud service must submit a Cloud Service Request for security and cost review before use.
+
+DATA RESIDENCY
+Customer data covered by GDPR must remain within EU regions (West Europe / North Europe Azure regions). Employees must not store EU customer data in US-only regions.
+
+CLOUD ACCESS
+Developer access to cloud environments follows the same least-privilege model as internal systems. Production access is restricted and requires just-in-time elevation via the PAM system.

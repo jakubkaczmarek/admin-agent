@@ -1,0 +1,24 @@
+HARDWARE MANAGEMENT — ACME COMPANY
+====================================
+
+Acme Company standardizes hardware to reduce support overhead and ensure security compliance. All company hardware is owned by Acme; personal devices may not be used to access internal systems unless enrolled in the MDM BYOD program.
+
+STANDARD HARDWARE PROFILES
+- Office employees: Dell Latitude 5540 (Windows 11) or MacBook Pro 14"
+- Developers / Engineers: MacBook Pro 16" (M-series) + optional 27" external monitor
+- Executives: MacBook Pro 14" + iPhone 15 Pro (company-issued)
+- Reception / Shared workstations: Dell OptiPlex desktops with locked-down standard image
+
+PROCUREMENT
+New hardware requests are submitted through the IT Help Portal. Standard laptops are provisioned within 5 business days for existing employees and pre-staged for new hires. Hardware above $2,500 requires department head approval.
+
+ASSET TRACKING
+Every device is registered in the asset management system (ServiceNow CMDB) with a unique asset tag. Employees sign an Asset Acknowledgement Form upon receiving hardware.
+
+REPAIRS & REPLACEMENTS
+- Warranty repairs are handled directly with Dell/Apple via IT.
+- Accidental damage once every 24 months is covered by company policy; additional incidents may be charged to the employee.
+- End-of-life hardware (>4 years) is replaced on a rolling basis.
+
+RETURN POLICY
+All hardware must be returned to IT within 2 business days of an employee's last day. IT wipes devices using certified data-destruction procedures before re-imaging or disposal.

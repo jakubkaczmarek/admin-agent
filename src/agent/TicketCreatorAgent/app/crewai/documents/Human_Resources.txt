@@ -1,0 +1,25 @@
+HUMAN RESOURCES (HR) — ACME COMPANY
+=====================================
+
+Acme Company's HR department supports ~2,400 employees across four regions. The HR team is headquartered in Austin with HR Business Partners embedded in the London, Warsaw, and Singapore offices.
+
+HR LEADERSHIP
+- Chief People Officer: Angela Torres
+- HR Director, Americas: Marcus Webb
+- HR Director, EMEA: Claire Dubois
+- HR Business Partners: one per ~150 employees
+
+HRIS PLATFORM
+Workday is the single system of record for all employee data: org structure, positions, compensation, performance, and time-off. Employees manage their own personal data, time-off requests, and benefits elections in Workday Self-Service.
+
+RECRUITMENT
+Open positions are approved by department heads in Workday. Recruiting is managed by the Talent Acquisition team using Greenhouse ATS. All offers require HR and Finance approval before being extended. Background checks are conducted by HireRight for all new hires.
+
+ONBOARDING
+New hires receive a structured 90-day onboarding plan via the Workday onboarding module. Day 1 includes IT setup, HR orientation, and compliance training. A 30/60/90-day check-in with the HR Business Partner is standard for all new employees.
+
+PERFORMANCE MANAGEMENT
+Annual performance reviews are conducted in Workday in Q1. Mid-year check-ins occur in Q3. All employees set OKRs at the start of each fiscal year aligned to company and team goals.
+
+OFFBOARDING
+Voluntary and involuntary separations are processed by HR in Workday. HR notifies IT and Payroll on the employee's last day. Exit interviews are conducted by the HR Business Partner.
