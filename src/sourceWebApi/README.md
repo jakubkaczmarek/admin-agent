@@ -1,197 +1,66 @@
-# Consumer Reviews API
+# Web API
 
-REST API for accessing consumer reviews from CSV files by date range with status management.
+REST API and MCP server for the support ticketing system.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 npm install
-
-# Run in development mode (REST API + MCP server)
-npm run dev
-
-# Run only MCP server (stdio transport)
-npm run mcp
-
-# Build for production
-npm run build
-npm start
+npm run dev    # REST API + MCP server
+npm run build && npm start  # production
 ```
 
-## API Endpoints
+## REST API
 
-All REST endpoints are prefixed with `/reviews`.
+All endpoints are prefixed with `/support-threads`.
 
-### Get Reviews by Date Range
-```
-GET /reviews?startDate=2026-01-01&endDate=2026-01-31&status=accepted
-```
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/` | Create a new thread with an initial message |
+| `GET` | `/` | List threads (paginated; filter by `status`) |
+| `GET` | `/:id` | Get a thread with all its messages |
+| `POST` | `/:id/messages` | Add a message to a thread |
+| `POST` | `/:id/closed` | Close a thread |
+| `PUT` | `/:id` | Update thread category (`SupportAgent` only) |
+| `DELETE` | `/` | Delete all threads |
 
-Loads all `consumerReviews_*.csv` files and returns reviews matching the date range.
-
-**Parameters:**
-- `startDate` (required): Start date in `YYYY-MM-DD` format
-- `endDate` (required): End date in `YYYY-MM-DD` format
-- `status` (optional): Filter by status (`new`, `pending-review`, `auto-accepted`, `auto-rejected`, `accepted`, `rejected`)
-
-**Response:**
+**Create thread** — `POST /support-threads`
 ```json
-{
-  "success": true,
-  "data": [
-    {
-      "Id": 1,
-      "ClientId": 3,
-      "DateTime": "2026-01-01 08:12:14.1234567",
-      "Rating": 5,
-      "Comment": "Absolutely outstanding service...",
-      "sourceFile": "consumerReviews_january2026.csv",
-      "status": "new"
-    }
-  ]
-}
+{ "creatorUserName": "alice", "subject": "Login broken", "category": "Auth", "message": "..." }
 ```
 
-### Get Unprocessed Reviews
-```
-GET /reviews/unprocessed?pageSize=10&skipCount=0
-```
+**List threads** — `GET /support-threads?pageIndex=0&pageSize=20&status=active`
 
-Returns reviews with `pending-review` status with pagination.
-
-**Response:**
+**Add message** — `POST /support-threads/:id/messages`
 ```json
-{
-  "success": true,
-  "data": {
-    "pageNumber": 1,
-    "pageSize": 10,
-    "totalCount": 42,
-    "items": [...]
-  }
-}
+{ "creatorUserName": "alice", "message": "Still not working." }
 ```
 
-### Accept Review
-```
-POST /reviews/:id/accept
-```
-
-Sets review status to `accepted`.
-
-### Auto-Accept Review
-```
-POST /reviews/:id/auto-accept
+**Update category** — `PUT /support-threads/:id`
+```json
+{ "category": "Billing", "userName": "SupportAgent" }
 ```
 
-Sets review status to `auto-accepted`.
-
-### Pending Review
-```
-POST /reviews/:id/pending
-```
-
-Sets review status to `pending-review`.
-
-### Auto-Reject Review
-```
-POST /reviews/:id/auto-reject
-```
-
-Sets review status to `auto-rejected`.
-
-### Reject Review
-```
-POST /reviews/:id/reject
-```
-
-Sets review status to `rejected`.
-
-## Review Statuses
-
-| Status | Value | Description |
-|--------|-------|-------------|
-| `new` | 0 | Initial, default status |
-| `auto-accepted` | 1 | Automatically accepted (e.g., by AI filter) |
-| `auto-rejected` | 2 | Automatically rejected (e.g., by AI filter) |
-| `pending-review` | 3 | Awaiting manual review |
-| `accepted` | 4 | Manually accepted |
-| `rejected` | 5 | Manually rejected |
+All responses use `{ "success": true, "data": ... }` / `{ "success": false, "error": "..." }`.
 
 ## MCP Server
 
-This application includes an **MCP (Model Context Protocol) server** that provides tools for AI assistants.
-
-### Running the MCP Server
-
-**Development mode:**
-```bash
-npm run mcp
-```
-
-**Production mode:**
-```bash
-node dist/mcp-standalone.js
-```
-
-**As a CLI command (after npm install -g):**
-```bash
-consumer-reviews-mcp
-```
-
-### Available MCP Tools
+The API doubles as an MCP server at `/mcp` (`streamable_http` transport), exposing five tools to AI agents:
 
 | Tool | Description |
 |------|-------------|
-| `get_reviews_by_date_range` | Get consumer reviews filtered by date range and optional status |
-| `update_review_status` | Update the status of a specific review (any status) |
-| `auto_accept_review` | Auto-accept a specific review (sets status to auto-accepted) |
-| `pending_review` | Set a specific review to pending review status |
-| `auto_reject_review` | Auto-reject a specific review (sets status to auto-rejected) |
-| `get_unprocessed_reviews` | Get unprocessed reviews with pagination (status = pending-review) |
+| `create_support_thread` | Create a thread with an initial message |
+| `create_support_message` | Add a message to an existing thread |
+| `close_support_thread` | Close a thread |
+| `get_support_threads` | List threads with optional pagination and status filter |
+| `update_thread_category` | Update a thread's category (requires `userName: "SupportAgent"`) |
 
-### Configuring MCP Client
-
-Add to your AI assistant's MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "consumer-reviews": {
-      "command": "node",
-      "args": ["./dist/mcp-standalone.js"],
-      "cwd": "/path/to/sourceWebApi"
-    }
-  }
-}
-```
-
-Or use the provided `.mcp.json` file in the project root.
-
-## Response Format
-
-```json
-{
-  "success": true,
-  "data": { ... }
-}
-```
-
-Errors:
-```json
-{
-  "success": false,
-  "error": "Error message"
-}
-```
+A stdio transport is also available for local AI assistant clients (`npm run mcp`).
 
 ## Environment Variables
-
-Copy `.env.example` to `.env`:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PORT` | Server port | `3000` |
-| `CSV_DATA_DIR` | Path to CSV files | `./data` |
+| `DB_*` | MSSQL connection settings | — |
 | `NODE_ENV` | Environment | `development` |
