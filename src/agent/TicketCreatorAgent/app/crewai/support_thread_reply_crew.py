@@ -5,8 +5,7 @@ import logging
 from pathlib import Path
 
 import yaml
-from crewai import Agent, Crew, Process, Task
-from langchain_openai import ChatOpenAI
+from crewai import LLM, Agent, Crew, Process, Task
 
 from app.config import Settings
 from app.crewai.models import AnalyzerOutput
@@ -23,7 +22,7 @@ def _load_agent_yaml(name: str) -> dict:
         return yaml.safe_load(f)
 
 
-def _build_agents(llm: ChatOpenAI, tools_map: dict) -> dict[str, Agent]:
+def _build_agents(llm: LLM, tools_map: dict) -> dict[str, Agent]:
     configs = {
         "fetcher_analyzer": _load_agent_yaml("fetcher_analyzer"),
         "response_writer": _load_agent_yaml("response_writer"),
@@ -97,8 +96,8 @@ async def process_thread(
 ) -> AutoreplyResult:
     try:
         tools_map = make_tools(settings)
-        llm = ChatOpenAI(
-            model=settings.openai_model,
+        llm = LLM(
+            model=f"openai/{settings.openai_model}",
             api_key=settings.openai_api_key,
             temperature=0,
         )

@@ -23,12 +23,11 @@ def _load_yaml(filename: str) -> dict:
         return yaml.safe_load(f)
 
 
+_TOOL_TIMEOUT = 30  # seconds
+
+
 def _run_in_new_loop(coro) -> Any:
-    loop = asyncio.new_event_loop()
-    try:
-        return loop.run_until_complete(coro)
-    finally:
-        loop.close()
+    return asyncio.run(asyncio.wait_for(coro, timeout=_TOOL_TIMEOUT))
 
 
 def _extract_text(result: Any) -> str:
@@ -70,6 +69,7 @@ def make_tools(settings: Settings) -> dict[str, BaseTool]:
         args_schema: Type[BaseModel] = _GetSupportThreadInput
 
         def _run(self, ticket_id: int) -> str:
+            logger.info("get_support_thread_by_id: calling MCP for thread %s", ticket_id)
             async def _call():
                 async with mcp_session(settings) as session:
                     return await call_tool_by_patterns(
@@ -77,6 +77,7 @@ def make_tools(settings: Settings) -> dict[str, BaseTool]:
                     )
 
             result = _run_in_new_loop(_call())
+            logger.info("get_support_thread_by_id: got result for thread %s", ticket_id)
             return _extract_text(result)
 
     class KBSearchTool(BaseTool):
@@ -85,18 +86,43 @@ def make_tools(settings: Settings) -> dict[str, BaseTool]:
         args_schema: Type[BaseModel] = _KBSearchInput
 
         def _run(self, query: str) -> str:
-            query_lower = query.lower()
+            _STOP = {"a","an","the","is","are","was","were","be","been","being",
+                     "i","my","we","our","you","your","it","its","do","does","did",
+                     "to","of","in","on","at","for","with","and","or","but","not",
+                     "how","what","when","where","who","why","can","could","would",
+                     "should","will","have","has","had","this","that","these","those"}
+            keywords = [w for w in query.lower().split() if w not in _STOP and len(w) > 2]
+            if not keywords:
+                keywords = query.lower().split()
+
+            logger.info("kb_search: query=%r  keywords=%s", query, keywords)
             matches: list[str] = []
             for txt_file in sorted(documents_dir.glob("*.txt")):
                 text = txt_file.read_text(encoding="utf-8")
+                para_lower = text.lower()
                 for para in text.split("\n\n"):
-                    if any(word in para.lower() for word in query_lower.split()):
+                    para_l = para.lower()
+                    if all(kw in para_l for kw in keywords):
                         matches.append(f"[{txt_file.stem}]\n{para.strip()}")
                         if len(matches) >= 5:
                             break
                 if len(matches) >= 5:
                     break
 
+            # fallback: any keyword matches if all-keywords found nothing
+            if not matches:
+                for txt_file in sorted(documents_dir.glob("*.txt")):
+                    text = txt_file.read_text(encoding="utf-8")
+                    for para in text.split("\n\n"):
+                        para_l = para.lower()
+                        if any(kw in para_l for kw in keywords):
+                            matches.append(f"[{txt_file.stem}]\n{para.strip()}")
+                            if len(matches) >= 5:
+                                break
+                    if len(matches) >= 5:
+                        break
+
+            logger.info("kb_search: returning %d match(es)", len(matches))
             if not matches:
                 return "No relevant knowledge base entries found."
             return "\n\n---\n\n".join(matches)
@@ -107,6 +133,7 @@ def make_tools(settings: Settings) -> dict[str, BaseTool]:
         args_schema: Type[BaseModel] = _CreateSupportMessageInput
 
         def _run(self, ticket_id: int, content: str) -> str:
+            logger.info("create_support_message: sending reply for thread %s", ticket_id)
             async def _call():
                 async with mcp_session(settings) as session:
                     return await call_tool_by_patterns(
@@ -118,6 +145,7 @@ def make_tools(settings: Settings) -> dict[str, BaseTool]:
                     )
 
             result = _run_in_new_loop(_call())
+            logger.info("create_support_message: sent reply for thread %s", ticket_id)
             return _extract_text(result)
 
     tools = [GetSupportThreadTool(), KBSearchTool(), CreateSupportMessageTool()]

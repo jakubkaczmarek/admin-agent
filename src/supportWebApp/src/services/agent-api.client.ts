@@ -54,6 +54,10 @@ export class SupportTicketsAgentApiService extends ServiceProxy {
   async autocompleteTickets(): Promise<JobAcceptedResponse> {
     return this.requestRaw<JobAcceptedResponse>('POST', '/tickets/all/autocomplete');
   }
+
+  async autoreplyTickets(): Promise<JobAcceptedResponse> {
+    return this.requestRaw<JobAcceptedResponse>('POST', '/tickets/all/autoreply');
+  }
 }
 
 // ============= Agent API Client =============

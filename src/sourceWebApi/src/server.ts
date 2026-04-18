@@ -5,6 +5,7 @@ import { closePool, getPool } from './utils/db';
 import consumerReviewRoutes from './routes/consumer-review.routes';
 import supportThreadRoutes from './routes/support-threads.routes';
 import { createMcpServer, createHttpTransport, startMcpServer } from './mcp/mcp-server';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 
 dotenv.config();
@@ -41,36 +42,28 @@ app.use('/reviews', consumerReviewRoutes);
 app.use('/support-threads', supportThreadRoutes);
 
 // MCP HTTP Streamable endpoint
-// Create a new transport instance per session to properly handle session lifecycle.
-// The StreamableHTTPServerTransport has internal state tied to a single session,
-// and reusing one transport across multiple sessions causes 400 errors after disconnect.
-const httpMcpServer = createMcpServer();
-
-// Map to store transports by session ID for proper lifecycle management
-const transportsBySessionId = new Map<string, StreamableHTTPServerTransport>();
-
-// Store the most recently created transport for the initialization handshake
-let pendingInitTransport: StreamableHTTPServerTransport | null = null;
+// Each session gets its own McpServer + transport pair so concurrent sessions
+// don't trip the SDK's "already connected to a transport" guard.
+type McpSession = { server: McpServer; transport: StreamableHTTPServerTransport };
+const sessionMap = new Map<string, McpSession>();
 
 app.all('/mcp', async (req, res) => {
   try {
-    // Extract session ID from request headers (sent by client on subsequent requests)
     const sessionId = req.headers['mcp-session-id'] as string | undefined;
 
     let transport: StreamableHTTPServerTransport;
 
-    if (sessionId && transportsBySessionId.has(sessionId)) {
+    if (sessionId && sessionMap.has(sessionId)) {
       // Reuse existing transport for this session
-      transport = transportsBySessionId.get(sessionId)!;
+      transport = sessionMap.get(sessionId)!.transport;
     } else if (!sessionId && req.method === 'POST') {
-      // New session initialization request - create a fresh transport
-      transport = createHttpTransport(httpMcpServer);
-      pendingInitTransport = transport;
+      // New session — fresh server + transport pair so concurrent sessions don't collide
+      const sessionServer = createMcpServer();
+      transport = createHttpTransport(sessionServer);
 
-      // Wrap res.writeHead to capture the session ID from response headers
+      // Capture the session ID the transport writes into the response headers
       const originalWriteHead = res.writeHead.bind(res);
       res.writeHead = function (statusCode: number, statusMessage?: any, headers?: any) {
-        // Headers might be in statusMessage or headers argument
         let sessionHeader: string | undefined;
         if (typeof statusMessage === 'object' && statusMessage !== null) {
           sessionHeader = statusMessage['mcp-session-id'] || statusMessage['Mcp-Session-Id'];
@@ -79,17 +72,16 @@ app.all('/mcp', async (req, res) => {
           sessionHeader = headers['mcp-session-id'] || headers['Mcp-Session-Id'];
         }
         if (sessionHeader) {
-          transportsBySessionId.set(sessionHeader, transport);
-          pendingInitTransport = null;
+          sessionMap.set(sessionHeader, { server: sessionServer, transport });
         }
         return originalWriteHead(statusCode, statusMessage, headers);
       };
     } else if (sessionId && req.method === 'DELETE') {
-      // Session close - clean up transport
-      if (transportsBySessionId.has(sessionId)) {
-        const transportToClose = transportsBySessionId.get(sessionId)!;
-        await transportToClose.close();
-        transportsBySessionId.delete(sessionId);
+      if (sessionMap.has(sessionId)) {
+        const { server, transport: t } = sessionMap.get(sessionId)!;
+        await t.close();
+        await server.close();
+        sessionMap.delete(sessionId);
       }
       res.status(200).send();
       return;
@@ -164,16 +156,11 @@ process.on('SIGINT', async () => {
   console.log('Shutting down server...');
   server.close(async () => {
     await closePool();
-    // Close all active transports
-    for (const transport of transportsBySessionId.values()) {
-      try {
-        await transport.close();
-      } catch {
-        // Ignore errors during shutdown
-      }
+    for (const { server, transport } of sessionMap.values()) {
+      try { await transport.close(); } catch { /* ignore */ }
+      try { await server.close(); } catch { /* ignore */ }
     }
-    transportsBySessionId.clear();
-    await httpMcpServer.close();
+    sessionMap.clear();
     await stdioMcpServer.close();
     console.log('Server closed');
     process.exit(0);
@@ -184,16 +171,11 @@ process.on('SIGTERM', async () => {
   console.log('Shutting down server...');
   server.close(async () => {
     await closePool();
-    // Close all active transports
-    for (const transport of transportsBySessionId.values()) {
-      try {
-        await transport.close();
-      } catch {
-        // Ignore errors during shutdown
-      }
+    for (const { server, transport } of sessionMap.values()) {
+      try { await transport.close(); } catch { /* ignore */ }
+      try { await server.close(); } catch { /* ignore */ }
     }
-    transportsBySessionId.clear();
-    await httpMcpServer.close();
+    sessionMap.clear();
     await stdioMcpServer.close();
     console.log('Server closed');
     process.exit(0);
