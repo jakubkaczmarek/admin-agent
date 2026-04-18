@@ -1,0 +1,29 @@
+SECURITY & COMPLIANCE — ACME COMPANY
+======================================
+
+Acme Company is certified under ISO 27001 and SOC 2 Type II. Compliance with GDPR and, for US healthcare clients, HIPAA, is maintained continuously.
+
+SECURITY FRAMEWORK
+The Information Security program is led by the CISO and governed by the Information Security Policy, reviewed annually. The framework aligns to NIST CSF.
+
+ENDPOINT SECURITY
+- All endpoints run CrowdStrike Falcon (EDR).
+- Full-disk encryption is enforced: BitLocker (Windows), FileVault (macOS).
+- USB storage is blocked by default; exceptions require IT approval.
+- Screen lock activates after 5 minutes of inactivity.
+
+NETWORK SECURITY
+- Corporate network access for remote employees is via Zscaler ZPA (zero-trust network access). VPN is not used.
+- Internal network segments are separated by environment (dev / staging / production / corporate).
+- Firewalls are managed by the Network Security team; no direct inbound rules to production are permitted.
+
+VULNERABILITY MANAGEMENT
+- External attack surface is scanned weekly via Tenable.io.
+- Internal vulnerability scans run nightly; critical findings must be remediated within 7 days, high within 30 days.
+- Annual penetration tests are conducted by an accredited third-party firm.
+
+INCIDENT RESPONSE
+Security incidents are reported immediately to security@acmeco.com or via the Teams Security channel. The IR team triages within 1 hour. A post-incident review is conducted for all Severity 1 and 2 incidents.
+
+EMPLOYEE RESPONSIBILITIES
+All employees complete mandatory security awareness training annually and phishing simulation tests quarterly. Failure to report a suspected phishing email is a policy violation.

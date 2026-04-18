@@ -1,0 +1,28 @@
+PROCUREMENT & PURCHASING — ACME COMPANY
+========================================
+
+All purchasing activity at Acme Company flows through the Procurement team to ensure cost control, vendor due diligence, and compliance with financial controls.
+
+PURCHASING THRESHOLDS & APPROVAL
+- Under $500: Manager approval via purchase request in NetSuite
+- $500–$5,000: Department Head approval
+- $5,000–$25,000: VP + Procurement review
+- Above $25,000: CFO approval + Legal review for contracts
+- Above $100,000: Board approval required (annual budget items exempt if pre-approved)
+
+PURCHASE ORDER PROCESS
+1. Employee submits a Purchase Requisition in NetSuite with business justification.
+2. Required approvals are routed automatically.
+3. Procurement issues the Purchase Order (PO) to the vendor.
+4. Goods/services received are confirmed in NetSuite (3-way match: PO, receipt, invoice).
+5. Finance processes payment per vendor payment terms (net-30 standard).
+
+PREFERRED VENDOR LIST
+Procurement maintains a Preferred Vendor List (PVL) of pre-vetted suppliers with negotiated pricing. Employees are encouraged to use PVL vendors to accelerate approval. New vendors require a vendor onboarding process: W-9/W-8, bank details, and a brief security/financial due diligence review.
+
+PROHIBITED PURCHASING
+- Personal purchases on company accounts are strictly prohibited.
+- Purchases from relatives or entities with a conflict of interest must be disclosed and approved by the Ethics Committee.
+
+CORPORATE CREDIT CARDS
+Select employees hold Amex corporate cards for travel and incidental expenses. Card holders must reconcile expenses monthly in Concur. Unreconciled expenses after 30 days are escalated to the employee's manager.

@@ -1,0 +1,27 @@
+TRAINING & DEVELOPMENT — ACME COMPANY
+=======================================
+
+Acme Company invests in continuous learning for all employees. The Learning & Development (L&D) function sits within HR and is responsible for mandatory compliance training, role-based technical learning, and leadership development programs.
+
+LEARNING PLATFORM
+All training is delivered through Workday Learning, integrated with LinkedIn Learning and an internal course catalog. Employees log in via SSO. Completion records feed directly into Workday performance profiles.
+
+MANDATORY TRAINING
+All employees must complete the following annually:
+- Information Security Awareness (60 min)
+- Anti-Bribery & Corruption / Code of Conduct (45 min)
+- Data Privacy & GDPR Fundamentals (45 min)
+- Health & Safety (30 min, region-specific)
+Overdue mandatory training triggers automated reminders and is escalated to managers after 14 days.
+
+LEARNING BUDGET
+Each full-time employee has an annual L&D budget of $1,500 for external courses, certifications, and conferences. Requests are submitted in Workday for manager approval. Unused budget does not roll over.
+
+CERTIFICATION SUPPORT
+Acme fully covers the cost of job-relevant professional certifications (e.g., AWS/Azure certs, PMP, CPA, CISSP). Employees who leave within 12 months of completing a company-funded certification may be required to repay the cost on a pro-rated basis.
+
+LEADERSHIP DEVELOPMENT
+High-potential employees at the Senior Manager level and above are eligible for the Acme Leadership Academy, a 6-month blended program run in partnership with UT Austin McCombs School of Business.
+
+MENTORSHIP PROGRAM
+A structured mentorship program pairs employees with senior leaders for 6-month engagements. Applications open in January and July each year via the HR intranet page.

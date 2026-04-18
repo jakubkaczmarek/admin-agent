@@ -1,0 +1,8 @@
+name: kb_search
+description: >
+  Search the internal company knowledge base for policies, procedures, and support guidelines.
+  Pass a natural-language query string.
+inputs:
+  query:
+    type: str
+    description: Natural language search query.

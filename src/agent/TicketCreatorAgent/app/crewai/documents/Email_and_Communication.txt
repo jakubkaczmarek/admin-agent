@@ -1,0 +1,28 @@
+EMAIL & COMMUNICATION — ACME COMPANY
+======================================
+
+Acme Company uses Microsoft 365 as its unified communication platform. All business communication must be conducted through company-issued accounts.
+
+EMAIL PLATFORM
+- Provider: Microsoft Exchange Online (Outlook)
+- Domain: @acmeco.com
+- Mailbox size: 100 GB per user; shared mailboxes available upon request
+- Email retention: 7 years (per legal and compliance policy)
+- Spam/phishing filtering: Microsoft Defender for Office 365 + Proofpoint
+
+INSTANT MESSAGING & COLLABORATION
+- Primary: Microsoft Teams (chat, calls, video conferencing)
+- Channels are organized by team and project; use of public channels encouraged over email for team discussions
+- External guests may be invited to Teams with manager approval; guest access is audited monthly
+
+ACCEPTABLE USE
+- Company email and communication tools are for business purposes. Limited personal use is tolerated but must not interfere with work or violate policy.
+- Sending confidential company data to personal email accounts is strictly prohibited.
+- Employees must not use personal messaging apps (WhatsApp, Telegram, etc.) for business-sensitive communication.
+
+EMAIL SIGNATURE
+All employees must use the standard Acme email signature template provided by Marketing. Signatures are enforced via an Exchange transport rule for external emails.
+
+OUT-OF-OFFICE & ARCHIVING
+- Employees are expected to set out-of-office replies during absences of more than one business day.
+- Mailboxes of former employees are converted to shared mailboxes for 90 days before deletion, accessible by their former manager.

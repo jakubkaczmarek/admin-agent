@@ -53,3 +53,4 @@ Sender (post via MCP)
 * API endpoint schedules new job (schedule_job) and calls new agent through run_for_all_threads orchestration provided by support_threads_orchestrator
 * Analyzer does heavy lifting
 * Keep JSON between agents strict using strongly-typed Pydantic model
+* implement new agent code in app/crewai folder

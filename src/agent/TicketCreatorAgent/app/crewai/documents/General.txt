@@ -1,0 +1,40 @@
+ACME COMPANY — ORGANIZATION OVERVIEW
+=====================================
+
+Founded: 1995
+Headquarters: 142 Innovation Drive, Austin, TX 78701, USA
+Regional Offices: New York, London, Warsaw, Singapore
+Industry: B2B Technology Solutions (SaaS, IT Managed Services, Consulting)
+Employees: ~2,400 (as of 2024)
+Website: www.acmeco.com
+
+MISSION
+-------
+Acme Company delivers enterprise software and managed IT services that help mid-market businesses operate more efficiently and securely.
+
+BOARD OF DIRECTORS
+------------------
+- Margaret H. Lawson — Chairwoman of the Board (former CTO, Northgate Systems)
+- Daniel R. Croft — Chief Executive Officer
+- Sophia Mäkinen — Chief Financial Officer
+- Victor Alonso — Chief Operating Officer
+- Dr. Priya Shankar — Chief Technology Officer
+- James T. Whitfield — Independent Director, Audit Committee Chair
+- Linette Okafor — Independent Director, Compensation Committee Chair
+- Owen Barret — Independent Director (venture partner, Meridian Capital)
+
+FINANCIAL RESULTS (FY 2015–2024, USD millions)
+------------------------------------------------
+Year | Revenue | EBITDA | Net Income
+2015 |   112.4 |   18.3 |      9.1
+2016 |   128.7 |   21.0 |     10.6
+2017 |   145.2 |   24.5 |     12.3
+2018 |   163.8 |   27.1 |     13.9
+2019 |   189.0 |   31.4 |     15.8
+2020 |   174.5 |   22.6 |      8.4   ← pandemic impact
+2021 |   204.3 |   35.2 |     18.7
+2022 |   241.6 |   44.0 |     23.5
+2023 |   278.9 |   52.3 |     28.1
+2024 |   307.4 |   61.8 |     34.2
+
+Key milestones: Acquired CloudBridge Inc. (2021), launched AcmeCloud platform (2022), IPO on NASDAQ (ticker: ACMC) in October 2023.

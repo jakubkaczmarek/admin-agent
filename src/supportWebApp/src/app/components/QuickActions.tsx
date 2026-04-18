@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
-import { Wand2, Trash2, Loader2, Tags, Sparkles } from 'lucide-react';
+import { Wand2, Trash2, Loader2, Tags, Sparkles, Send } from 'lucide-react';
 import { GenerateTicketsModal } from './GenerateTicketsModal';
 import { CategorizeTicketsModal } from './CategorizeTicketsModal';
 import { AgentApiClient } from '../../services/agent-api.client';
@@ -20,6 +20,7 @@ export function QuickActions({
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
   const [categorizeModalOpen, setCategorizeModalOpen] = useState(false);
   const [autocompleting, setAutocompleting] = useState(false);
+  const [autoreplying, setAutoreplying] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const handleDeleteAll = async () => {
@@ -50,6 +51,19 @@ export function QuickActions({
       toast.error('Failed to autocomplete tickets');
     } finally {
       setAutocompleting(false);
+    }
+  };
+
+  const handleAutoreplyTickets = async () => {
+    setAutoreplying(true);
+    try {
+      const { jobId } = await agentApi.supportTickets.autoreplyTickets();
+      onJobStarted?.(jobId);
+    } catch (error) {
+      console.error('Failed to autoreply tickets:', error);
+      toast.error('Failed to autoreply tickets');
+    } finally {
+      setAutoreplying(false);
     }
   };
 
@@ -85,6 +99,19 @@ export function QuickActions({
             <Sparkles className="w-4 h-4" />
           )}
           <span className="ml-2">{autocompleting ? 'Completing...' : 'Complete'}</span>
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleAutoreplyTickets}
+          disabled={autoreplying}
+          className="justify-start"
+        >
+          {autoreplying ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Send className="w-4 h-4" />
+          )}
+          <span className="ml-2">{autoreplying ? 'Replying...' : 'Autoreply'}</span>
         </Button>
         <Button
           variant="destructive"

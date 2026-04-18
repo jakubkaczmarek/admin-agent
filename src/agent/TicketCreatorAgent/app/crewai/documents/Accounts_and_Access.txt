@@ -1,0 +1,24 @@
+ACCOUNTS & ACCESS MANAGEMENT — ACME COMPANY
+=============================================
+
+Acme Company follows a least-privilege access model. All access to systems and data is role-based and reviewed quarterly.
+
+IDENTITY PROVIDER
+Microsoft Entra ID (formerly Azure AD) is the single identity provider. Employees authenticate via SSO for all internal and cloud applications. MFA (Microsoft Authenticator) is mandatory for all accounts.
+
+ACCOUNT LIFECYCLE
+- Provisioning: IT creates accounts from HR-approved onboarding tickets. New hire accounts are ready on Day 1.
+- Role Changes: Access is updated within one business day of an approved change request from HR or a manager.
+- Offboarding: Accounts are disabled within 1 hour of an employee's departure notification and permanently deleted after 90 days.
+
+ACCESS REQUEST PROCESS
+1. Submit a request in the IT Help Portal specifying the system, required permission level, and business justification.
+2. Manager approval is required for all non-standard access.
+3. Access to sensitive data (PII, financial, source code) additionally requires the Data Owner's approval.
+4. IT provisions access within 2 business days.
+
+PRIVILEGED ACCESS
+Admin and privileged accounts are managed via CyberArk PAM. Privileged sessions are logged and audited. No standing admin access is granted; just-in-time elevation is used for all elevated operations.
+
+ACCESS REVIEWS
+All access rights are reviewed every quarter. Managers certify their team's access via the IT Portal. Uncertified access is automatically revoked after 7 days.

@@ -1,0 +1,26 @@
+CUSTOMER SUPPORT / CLIENT ISSUES — ACME COMPANY
+================================================
+
+Acme Company provides tiered support to all AcmeCloud customers and managed-service clients. The Customer Support organization is led by the VP of Customer Success and operates across Austin, London, and Singapore to provide near-24/5 coverage.
+
+SUPPORT TIERS
+- Tier 1 (Help Desk): First-response for common issues, account queries, how-to questions. Target first response: 2 hours (business hours).
+- Tier 2 (Technical Support): Complex technical issues, integrations, configuration problems. Escalated from Tier 1. Target response: 4 hours.
+- Tier 3 (Engineering): Bugs, platform outages, data issues. Escalated from Tier 2. Involves the Product Engineering team.
+
+SLA TARGETS (AcmeCloud)
+- Critical (platform down): 1-hour response, 4-hour resolution target
+- High (major feature impaired): 2-hour response, 8-hour resolution target
+- Medium (degraded performance): 4-hour response, 24-hour resolution
+- Low (cosmetic / informational): 8-hour response, 5-business-day resolution
+
+SUPPORT CHANNELS
+- Primary: Client portal at support.acmeco.com (ticket-based)
+- Phone: +1-800-226-2600 (US), +44-20-3478-5500 (UK) — Critical/High only
+- Email: support@acmeco.com (converted to tickets automatically)
+
+ESCALATION PROCESS
+If a client is dissatisfied with support progress, they may request escalation to their dedicated Client Success Manager. CSMs have direct access to engineering leads for Severity 1 and 2 incidents. Major incidents trigger a war-room process with a dedicated incident commander.
+
+POST-INCIDENT REVIEWS
+All Critical-severity incidents receive a Root Cause Analysis (RCA) report delivered to the client within 5 business days of resolution.

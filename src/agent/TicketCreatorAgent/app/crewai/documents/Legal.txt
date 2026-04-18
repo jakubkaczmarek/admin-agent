@@ -1,0 +1,26 @@
+LEGAL — ACME COMPANY
+=====================
+
+Acme Company's Legal department, based in Austin with counsel in London and Warsaw, handles all corporate, commercial, employment, and IP matters.
+
+LEGAL TEAM STRUCTURE
+- General Counsel: Sandra Meier (Austin)
+- Deputy Counsel, Commercial: Tom Bradley (Austin)
+- Legal Counsel, EMEA: Katarzyna Wróbel (Warsaw)
+- IP & Patent Counsel: Hiroshi Tanaka (Austin)
+- External law firms: Clifford & Gareth LLP (US litigation), DLA Piper (EMEA)
+
+CONTRACT MANAGEMENT
+All contracts must be reviewed and signed off by the Legal team before execution. Contracts are stored in the ContractSafe system. Employees must not sign contracts or commit Acme to obligations without Legal approval. Standard contract templates (NDA, MSA, SoW, DPA) are available on the Legal intranet page.
+
+NDAs
+Standard mutual NDAs can be signed by department heads and above. One-sided NDAs and any NDAs with non-standard clauses require Legal review. NDAs are stored in ContractSafe and expire after 3 years unless renewed.
+
+INTELLECTUAL PROPERTY
+All work product created by employees in the course of their employment is owned by Acme Company. Open-source contributions must be approved by the IP Counsel before submission. Use of GPL-licensed code in commercial products requires explicit Legal sign-off.
+
+LEGAL HOLDS
+When litigation is reasonably anticipated, Legal issues a Legal Hold notice to affected employees, requiring preservation of all relevant documents and communications. Violation of a legal hold is a serious disciplinary matter.
+
+DISPUTE RESOLUTION
+Employees with legal questions or concerns should contact legal@acmeco.com. External legal threats, demands, or subpoenas received by any employee must be forwarded to Legal immediately without response.

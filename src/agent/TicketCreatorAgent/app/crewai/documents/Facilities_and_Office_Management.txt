@@ -1,0 +1,23 @@
+FACILITIES & OFFICE MANAGEMENT — ACME COMPANY
+===============================================
+
+Acme Company's Facilities team manages four offices worldwide. The Austin HQ occupies 45,000 sq ft across two floors; regional offices range from 5,000–12,000 sq ft.
+
+OFFICE LOCATIONS & HOURS
+- Austin, TX (HQ): 142 Innovation Drive — Mon–Fri 7:00–22:00
+- New York, NY: 980 6th Ave, 12th Floor — Mon–Fri 8:00–20:00
+- London, UK: 30 St Mary Axe, 5th Floor — Mon–Fri 8:00–19:00
+- Warsaw, PL: ul. Złota 59, 10th Floor — Mon–Fri 8:00–19:00
+- Singapore: 1 Raffles Place, 28th Floor — Mon–Fri 8:00–19:00
+
+BUILDING ACCESS
+Access is controlled via HID Origo mobile credentials on company smartphones. Employees are assigned access zones based on their role. Visitors must be registered in the Envoy visitor management system by their host at least 4 hours in advance. Tailgating is strictly prohibited.
+
+DESK & MEETING ROOM BOOKING
+Acme operates a hybrid hot-desking model (Austin and London). Desks and meeting rooms are booked via Robin app, integrated with Outlook Calendar. Dedicated desks are reserved for executives and employees with accessibility requirements.
+
+FACILITIES REQUESTS
+Maintenance requests, cleaning issues, and office supply orders are submitted through the Facilities portal (facilities.acmeco.com). Urgent issues (e.g., HVAC failure, safety hazards) should be reported directly to the local Facilities Manager.
+
+SUSTAINABILITY
+Acme targets carbon neutrality by 2030. All offices use 100% renewable electricity. Single-use plastics are banned from all kitchens. Recycling and e-waste programs are operated in all locations.
